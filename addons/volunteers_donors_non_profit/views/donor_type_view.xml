@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="donor_type_custom_form_view" model="ir.ui.view">
+        <field name="name">donor.type.custom.form.view</field>
+        <field name="model">donor.type</field>
+        <field name="arch" type="xml">
+            <form string="Donor Type" class="o_sale_order">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="donor_note" string="Internal Notes">
+                            <field name="note" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="donor_type_custom_tree_view" model="ir.ui.view">
+        <field name="name">donor.type.custom.tree.view</field>
+        <field name="model">donor.type</field>
+        <field name="arch" type="xml">
+            <tree string="Donor Type">
+                <field name="name" />
+                <field name="code" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_custom_donor_type" model="ir.actions.act_window">
+        <field name="name">Donor Types</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">donor.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- <> Campaign CRUD operations -->
+    <record id="action_custom_campaign" model="ir.actions.act_window">
+        <field name="name">Campaign</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">campaign</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <!-- </> Campaign CRUD operations -->
+
+    <!-- <> Campaign form - Working on it -->
+    <!-- <record model="ir.ui.view" id="hr_recruitment_ext_form">
+        <field name="name">campaign.form</field>
+        <field name="model">campaign</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <field name="doj" />
+                <field name="presentsal" />
+            </field>
+        </field>
+    </record> -->
+    <!-- </> Campaign form -->
+
+    <!-- <> Campaign List View -->
+    <record id="action_custom_campaign_list" model="ir.ui.view">
+        <field name="name">campaign.custom.tree.view</field>
+        <field name="model">campaign</field>
+        <field name="arch" type="xml">
+            <tree string="Campaigns">
+                <field name="images" />
+                <field name="title" />
+                <field name="created_for" />
+                <field name="campaign_type" />
+                <field name="mobile" />
+                <field name="amount" />
+                <field name="published" />
+            </tree>
+        </field>
+    </record>
+    <!-- </> Campaign List View -->
+
+    <!-- <> Campaign Kanban View -->
+    <record id="action_custom_campaign_kanban" model="ir.ui.view">
+        <field name="name">campaign.custom.kanban.view</field>
+        <field name="model">campaign</field>
+        <field name="arch" type="xml">
+            <kanban class="o_res_campaign_kanban">
+                <field name="title" />
+                <field name="images" />
+                <field name="amount" />
+                <field name="mobile" />
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="o_kanban_image">
+                                <field name="images" widget="image" />
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="title" />
+                                </strong>
+                                <div t-if="record.mobile.value">
+                                    <t t-esc="record.mobile.value" />
+                                </div>
+                                <div t-if="record.amount.value">
+                                    <t t-esc="record.amount.value" />
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!-- </> Campaign Kanban View -->
+
+    <menuitem id="menu_parent_menu" name="Volunteers and Donors"
+        web_icon="volunteers_donors_non_profit,static/description/web_icon.png" />
+    <menuitem id="menu_add_sub_menu" name="Configuration" parent="menu_parent_menu" sequence="4" />
+    <menuitem id="menu_volunteer_type_menu" name="Volunteer Types" parent="menu_add_sub_menu"
+        sequence="1" action="action_custom_volunteer_type" />
+    <menuitem id="menu_volunteer_skills_menu" name="Volunteer Skills" parent="menu_add_sub_menu"
+        sequence="2" action="action_custom_volunteer_skills" />
+    <menuitem id="menu_donor_type_menu" name="Donor Types" parent="menu_add_sub_menu" sequence="3"
+        action="action_custom_donor_type" />
+    <menuitem id="menu_add_sub_new_menu" name="Volunteers" parent="menu_parent_menu" sequence="1"
+        action="custom_action_volunteer_add" />
+    <menuitem id="menu_donor_add_menu" name="Donors" parent="menu_parent_menu" sequence="2"
+        action="custom_action_donors_add" />
+    <menuitem id="menu_donor_campaigns" name="Campaigns" parent="menu_parent_menu" sequence="3"
+        action="action_custom_campaign" />
+</odoo>

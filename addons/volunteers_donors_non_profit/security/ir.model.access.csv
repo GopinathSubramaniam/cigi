@@ -1,0 +1,10 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_donor_type_rights,access.donor.type.rights,model_donor_type,base.group_user,1,0,0,0
+access_donor_type_sale_rights,access.donor.type.sale.rights,model_donor_type,sales_team.group_sale_manager,1,1,1,1
+access_volunteer_skills_rights,access.volunteer.skills.rights,model_volunteer_skills,base.group_user,1,0,0,0
+access_volunteer_skills_rights_sales_manager,access.volunteer.skills.rights.sales.manager,model_volunteer_skills,sales_team.group_sale_manager,1,1,1,1
+access_volunteer_type_rights,access.volunteer.type.rights,model_volunteer_type,base.group_user,1,0,0,0
+access_volunteer_type_rights_sales,access.volunteer.type.rights.sales,model_volunteer_type,sales_team.group_sale_manager,1,1,1,1
+access_volunteer_working_details_rights,access.volunteer.working.details.rights,model_volunteer_working_details,base.group_user,1,0,0,0
+access_volunteer_working_details_rights_sales,access.volunteer.working.details.rights.sales,model_volunteer_working_details,project.group_project_user,1,1,1,1
+access_campaign,access_campaign,model_campaign,base.group_user,1,1,1,1

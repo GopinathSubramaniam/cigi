@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="volunteer_type_custom_form_view" model="ir.ui.view">
+            <field name="name">volunteer.type.custom.form.view</field>
+            <field name="model">volunteer.type</field>
+            <field name="arch" type="xml">
+                <form string="Volunteer Type" class="o_sale_order">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="code"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="volunteer_note" string="Internal Notes">
+                                <field name="note"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="volunteer_type_custom_tree_view" model="ir.ui.view">
+            <field name="name">volunteer.type.custom.tree.view</field>
+            <field name="model">volunteer.type</field>
+            <field name="arch" type="xml">
+                <tree string="Volunteer Type">
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_custom_volunteer_type" model="ir.actions.act_window">
+            <field name="name">Volunteer Types</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">volunteer.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+</odoo>

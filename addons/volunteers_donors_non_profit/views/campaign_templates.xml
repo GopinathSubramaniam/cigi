@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- <> Display all campaigns -->
+    <template id="website_campaigns">
+        <t t-name="website.campaigns">
+            <t t-call="website.layout">
+                <div class="container mt-5">
+                    <div class="row">
+                        <t t-foreach="data" t-as="c">
+                            <div class="col-3 col-md-3 col-lg-3">
+                                <a t-attf-href="/campaign/detail/{{c.id}}">
+                                    <div class="card">
+                                        <img class="card-img-top img-fluid"
+                                            t-att-src="image_data_uri(c.images)"
+                                            alt="Campaign Image" />
+                                        <div class="card-body">
+                                            <h5 class="card-title" t-esc="c.title"></h5>
+                                            <p class="card-text" t-esc="c.amount"></p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    <!-- </> -->
+
+    <!-- <> Display campaign detail -->
+    <template id="website_campaign_detail">
+        <t t-name="website.campaign.detail">
+            <t t-call="website.layout">
+                <div class="container mt-5">
+                    <div class="row">
+                        <!-- Left side box -->
+                        <div class="col-7 mx-5">
+                            <h2>
+                                <t t-esc="campaign.title" />
+                            </h2>
+                            <hr />
+                            <div class="mb-4">
+                                <img class="img-fluid"
+                                    t-att-src="image_data_uri(campaign.images)"
+                                    alt="Campaign Image" />
+                            </div>
+                            <h4 class="mb-4">Need Rs.<t t-esc="campaign.amount" /></h4>
+                            <div class="mb-4">
+                                <button class="btn btn-success btn-lg rounded-pill">
+                                    <i class="fa fa-whatsapp"></i> Whatsapp </button>
+                                <button class="btn bg-blue btn-lg rounded-pill">
+                                    <i class="fa fa-facebook"></i> Facebook</button>
+                            </div>
+                            <div class="mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <small>This fundraiser will benefit</small>
+                                        <!-- <h5><t t-esc="campaign.create_uuid" /></h5> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right side box -->
+                        <div class="col">
+                            <button class="btn btn-danger btn-lg rounded-pill" id="initializeRazorpay">Donate Now</button>
+
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    <!-- </> -->
+</odoo>

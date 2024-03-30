@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="custom_view_crm_lead_add_volunteer_donors_tab" model="ir.ui.view">
+        <field name="name">custom.view.crm.lead.add.volunteer.donors.tab</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page string="Donor Details">
+                    <group>
+                        <group>
+                            <field name="custom_donor_type_id"/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Volunteer Details">
+                    <group>
+                        <group>
+                            <field name="custom_volunteer_type_id"/>
+                            <field name="custom_volunteer_skill_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="custom_view_crm_lead_add_search_volunteer_donors_tab" model="ir.ui.view">
+        <field name="name">custom.view.crm.lead.add.search.volunteer.donors.tab</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+             <xpath expr="//search" position="inside">
+                <filter string="Volunteer Type" context="{'group_by':'custom_volunteer_type_id'}" name="custom_volunteer_type_id"/>
+                <filter string="Donor Type" context="{'group_by':'custom_donor_type_id'}" name="custom_donor_type_id"/>
+                <filter string="Volunteer Skills" context="{'group_by':'custom_volunteer_skill_ids'}" name="custom_volunteer_skill_ids"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

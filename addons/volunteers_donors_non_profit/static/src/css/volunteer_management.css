@@ -1,0 +1,9 @@
+.bg-blue {
+    background-color: #3939c7;
+    color: white;
+}
+
+.bg-blue:hover {
+    background-color: #2c2c98;
+    color: white;
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="custom_view_res_parner_form_add_filed" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <group string="Volunteer">
+                    <field name="is_volunteer"/>
+                </group>
+                <group string="Donor">
+                    <field name="is_donors"/>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+               <!--  <page string="Volunteer Details" attrs="{'invisible': [('is_volunteer', '!=', True)]}"> -->
+                <page string="Volunteer Details" invisible="is_volunteer != True">
+                    <group>
+                        <group>
+                            <field name="res_volunteer_type_id"/>
+                            <field name="res_volunteer_skill_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                </page>
+              <!--   <page string="Donor Details" attrs="{'invisible': [('is_donors', '!=', True)]}"> -->
+                <page string="Donor Details" invisible="is_donors != True">
+                    <group>
+                        <group>
+                            <field name="res_donor_type_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+     <record id="custom_action_volunteer_add" model="ir.actions.act_window">
+        <field name="name">Volunteers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="domain">[('is_volunteer', '=', True)]</field>
+        <field name="context">{"default_is_volunteer":1}</field>
+        </record>
+    <record id="custom_action_donors_add" model="ir.actions.act_window">
+        <field name="name">Donors</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="domain">[('is_donors', '=', True)]</field>
+        <field name="context">{"default_is_donors":1}</field>
+     </record>
+</odoo>

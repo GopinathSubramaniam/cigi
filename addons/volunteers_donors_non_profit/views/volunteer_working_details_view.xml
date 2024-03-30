@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="volunteer_working_details_form_view" model="ir.ui.view">
+            <field name="name">volunteer.working.details.form.view</field>
+            <field name="model">volunteer.working.details</field>
+            <field name="arch" type="xml">
+                <form string="Volunteer Details" class="o_sale_order">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="volunteer_id"/>
+                                <field name="volunteer_type_id"/>
+                                <field name="start_date"/>
+                            </group>
+                            <group>
+                                <field name="volunteer_skill_ids" widget="many2many_tags"/>
+                                <field name="end_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="volunteer_working_details_tree_view" model="ir.ui.view">
+            <field name="name">volunteer.working.details.tree.view</field>
+            <field name="model">volunteer.working.details</field>
+            <field name="arch" type="xml">
+                <tree string="Volunteer Details">
+                    <field name="volunteer_id"/>
+                    <field name="volunteer_skill_ids" widget="many2many_tags"/>
+                    <field name="volunteer_type_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_volunteer_working_details" model="ir.actions.act_window">
+            <field name="name">Volunteer Details</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">volunteer.working.details</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+</odoo>

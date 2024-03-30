@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_add_new_volunteer_working_details_probc_custom" inherit_id="print_project_report.project_report_id">
+                <xpath expr="//div[hasclass('page')]" position="inside">
+                <h3>
+                    <strong>Volunteers</strong> 
+                </h3>
+                <table class="col-12 table">
+                    <tr style="border: 2px solid black;">
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                    </tr>
+                    <t t-foreach="doc.custom_volunteer_ids" t-as="volunteer">
+                        <tr style="border: 2px solid black;">
+                            <td><span t-field="volunteer.display_name"/></td>
+                            <td><span t-field="volunteer.phone"/></td>
+                            <td><span t-field="volunteer.email" /></td>
+                        </tr>
+                    </t>
+                </table>
+                <h3>
+                    <strong>Volunteer Details</strong> 
+                </h3>
+                <table class="col-12 table">
+                    <tr style="border: 2px solid black;">
+                        <th>Volunteer</th>
+                        <th>Volunteer Skill</th>
+                        <th>Volunteer Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                    <t t-foreach="doc.custom_volunteer_detail_ids" t-as="detail">
+                        <tr style="border: 2px solid black;">
+                            <td><span t-field="detail.volunteer_id.name"/></td>
+                            <td><span t-field="detail.volunteer_skill_ids"/></td>
+                            <td><span t-field="detail.volunteer_type_id.name" /></td>
+                            <td><span t-field="detail.start_date" /></td>
+                            <td><span t-field="detail.end_date"/></td>
+                        </tr>
+                    </t>
+                </table>
+            </xpath>
+        </template>
+    </data>
+</odoo>
