@@ -7,3 +7,69 @@
     background-color: #2c2c98;
     color: white;
 }
+
+.div-round {
+    display: inline-flex;
+    width: 55px;
+}
+
+.div-round i {
+    font-size: 55px;
+}
+
+.div-round div {
+    margin-left: -31px;
+    margin-top: 15px;
+    color: white;
+    font-weight: bold;
+}
+
+.box-theme-radius {
+    border-radius: 0px 20px 0px 20px;
+}
+
+/* Progressing */
+
+.progress-group {
+    /* width: 300px; */
+    /* padding: 50px 0; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.circular-progress {
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: 0.5s;
+}
+
+.circular-progress::before {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #FFF;
+}
+
+.circular-value {
+    position: relative;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.text-theme {
+    color: #4F7CBA;
+}
+
+.fixed-content {
+    bottom: unset;
+    position: fixed;
+}

@@ -27,4 +27,56 @@ $(function () {
         rzp1.open();
         ev.preventDefault();
     });
+
+    function buildProgressingBar(id) {
+        const parent_elem = document.getElementById(id);
+        if (parent_elem) {
+            let obj = { progress_color: '#28A745', text_color: '#000', percent: 90 };
+            let html = ` <div class="progress-group" id="progress-group">
+                            <div class="circular-progress" >
+                                <span class="circular-value" style="color:${obj.text_color}">${obj.percent}%</span>
+                            </div>
+                        </div>`;
+            parent_elem.innerHTML = html;
+
+            let elem = document.getElementById("progress-group");
+            console.log('Elem = ', elem);
+
+            if (elem) {
+                let progressStartValue = 0;
+                let progressStartEnd = obj.percent;
+                let speed = 50;
+                let progessTimer = setInterval(() => {
+                    progressStartValue++;
+                    if (progressStartValue == progressStartEnd) {
+                        clearInterval(progessTimer);
+                    }
+                    elem.querySelector(".circular-progress").style.background = `conic-gradient(${obj.progress_color} ${3.6 * progressStartValue}deg, #D5D5D5 0deg)`;
+                    elem.querySelector(".circular-value").innerHTML = progressStartValue + "%";
+                }, speed);
+            }
+        }
+
+    }
+
+    /* const progressBar = document.querySelector('.progress-bar__fill');
+
+    function animateProgressBar() {
+        let progress = 0;
+        const increment = 1 / 100; // Adjust the increment value for desired smoothness.
+
+        const interval = setInterval(() => {
+            progress += increment;
+            progressBar.style.width = `${progress * 100}%`;
+
+            if (progress >= 1) {
+                clearInterval(interval);
+            }
+        }, 10);
+    }
+
+    animateProgressBar(); */
+
+    buildProgressingBar('progressing-indicator');
+
 });

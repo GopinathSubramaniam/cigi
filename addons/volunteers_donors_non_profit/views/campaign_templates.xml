@@ -46,17 +46,28 @@
                                     t-att-src="image_data_uri(campaign.images)"
                                     alt="Campaign Image" />
                             </div>
-                            <h4 class="mb-4">Need Rs.<t t-esc="campaign.amount" /></h4>
+
                             <div class="mb-4">
-                                <button class="btn btn-success btn-lg rounded-pill">
-                                    <i class="fa fa-whatsapp"></i> Whatsapp </button>
-                                <button class="btn bg-blue btn-lg rounded-pill">
-                                    <i class="fa fa-facebook"></i> Facebook</button>
+                                <h2>Reason</h2>
+                                <div>
+                                    <t t-esc="campaign.description" />
+                                </div>
+
                             </div>
+
                             <div class="mb-4">
-                                <div class="card">
+                                <div class="card border box-theme-radius">
                                     <div class="card-body">
-                                        <small>This fundraiser will benefit</small>
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="fw-normal">If something isn't right, we
+                                                    will work with you to ensure no misuse occurs.
+                                                </h6>
+                                                <a href="#"
+                                                    class="fw-normal text-decoration-underline">Report
+                                                    this issue</a>
+                                            </div>
+                                        </div>
                                         <!-- <h5><t t-esc="campaign.create_uuid" /></h5> -->
                                     </div>
                                 </div>
@@ -65,7 +76,64 @@
 
                         <!-- Right side box -->
                         <div class="col">
-                            <button class="btn btn-danger btn-lg rounded-pill" id="initializeRazorpay">Donate Now</button>
+                            <div class="shadow-lg border rounded p-4 fixed-content">
+                                <div>
+                                    <div class="mb-4">
+                                        <h4 class="mb-4">Need Rs.<t t-esc="campaign.amount" /></h4>
+                                        <div class="d-flex mb-4 me-2">
+                                            <button
+                                                class="btn btn-success btn-block rounded-pill w-100 me-2">
+                                                <i class="fa fa-whatsapp"></i> Whatsapp </button>
+                                            <button class="btn bg-blue btn-block rounded-pill w-100">
+                                                <i class="fa fa-facebook"></i> Facebook</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="card border">
+                                            <div class="card-body">
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto pe-0">
+                                                        <!-- <div class="div-round">
+                                                            <i class="fa fa-circle text-primary"></i>
+                                                            <div>G</div>
+                                                        </div> -->
+                                                        <img src="" class="" />
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6 class="fw-light">This fundraiser will
+                                                            benefit</h6>
+                                                        <h5>Gopinath</h5>
+                                                        <h6 class="fw-normal">from Erode, Tamil Nadu</h6>
+                                                    </div>
+                                                </div>
+                                                <!-- <h5><t t-esc="campaign.create_uuid" /></h5> -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row align-items-center mb-4">
+                                        <div class="col-auto">
+                                            <div id="progressing-indicator"></div>
+                                        </div>
+                                        <div class="col">
+                                            <h6>Raised</h6>
+                                            <h5>
+                                                <span class="text-theme">Rs.17,57,922</span> of
+                                                Rs.<t t-esc="campaign.amount" /> </h5>
+                                        </div>
+                                    </div>
+
+
+                                    <h5 class="pb-3">
+                                        <i class="fa fa-heartbeat"></i> Donate </h5>
+                                    <div class="text-center">
+                                        <button class="btn btn-danger rounded-pill btn-lg w-100"
+                                            id="initializeRazorpay">Donate Now</button>
+                                        <h6 class="mt-2">Card, Netbanking, Cheque Pickups</h6>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
