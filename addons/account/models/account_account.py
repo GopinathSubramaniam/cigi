@@ -118,6 +118,8 @@ class AccountAccount(models.Model):
     non_trade = fields.Boolean(default=False,
                                help="If set, this account will belong to Non Trade Receivable/Payable in reports and filters.\n"
                                     "If not, this account will belong to Trade Receivable/Payable in reports and filters.")
+    
+    # campaign_id = fields.Many2one('volunteer.campaign', string='Account Currency', tracking=True, help="Campaign id")
 
     @api.constrains('company_id', 'code')
     def _constrains_code(self):

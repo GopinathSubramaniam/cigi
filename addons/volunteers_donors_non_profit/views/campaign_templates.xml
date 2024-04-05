@@ -8,15 +8,25 @@
                 <div class="container mt-5">
                     <div class="row">
                         <t t-foreach="data" t-as="c">
-                            <div class="col-3 col-md-3 col-lg-3">
-                                <a t-attf-href="/campaign/detail/{{c.id}}">
+                            <div class="col-12 col-md-4 col-lg-3 mb-4">
+                                <a t-attf-href="/campaign/detail/{{c.id}}"
+                                    class="text-decoration-none">
                                     <div class="card">
                                         <img class="card-img-top img-fluid"
-                                            t-att-src="image_data_uri(c.images)"
+                                            t-att-src="image_data_uri(c.first_image)"
                                             alt="Campaign Image" />
                                         <div class="card-body">
-                                            <h5 class="card-title" t-esc="c.title"></h5>
-                                            <p class="card-text" t-esc="c.amount"></p>
+                                            <div class="row">
+                                                <div class="col-auto">
+                                                    <div class="progressing-indicator-campaign"
+                                                        t-set="percent"
+                                                        t-attf-data-percent="{{c.id}}"></div>
+                                                </div>
+                                                <div class="col ps-0">
+                                                    <h6 class="card-title" t-esc="c.title"></h6>
+                                                    <p class="card-text" t-esc="c.fund_need"></p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </a>
@@ -37,29 +47,87 @@
                     <div class="row">
                         <!-- Left side box -->
                         <div class="col-7 mx-5">
-                            <h2>
+                            <!-- Campaign title -->
+                            <h4>
                                 <t t-esc="campaign.title" />
-                            </h2>
+                            </h4>
                             <hr />
+
+                            <!-- Campaign Images -->
                             <div class="mb-4">
-                                <img class="img-fluid"
-                                    t-att-src="image_data_uri(campaign.images)"
-                                    alt="Campaign Image" />
+                                <div id="carouselExample" class="carousel slide">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img class="d-block w-100"
+                                                t-att-src="image_data_uri(campaign.first_image)"
+                                                alt="Campaign Image" />
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img class="d-block w-100"
+                                                t-att-src="image_data_uri(campaign.second_image)"
+                                                alt="Campaign Image" />
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img class="d-block w-100"
+                                                t-att-src="image_data_uri(campaign.third_image)"
+                                                alt="Campaign Image" />
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselExample" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselExample" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+
                             </div>
 
+                            <!-- Fund need & share buttons -->
                             <div class="mb-4">
-                                <h2>Reason</h2>
+                                <h4 class="mb-4">Need Rs.<t t-esc="campaign.fund_need" /></h4>
+                                <div class="d-flex mb-4 me-2">
+                                    <button
+                                        class="btn btn-success btn-block rounded-pill w-100 me-2">
+                                        <i class="fa fa-whatsapp"></i> Whatsapp </button>
+                                    <button class="btn bg-blue btn-block rounded-pill w-100">
+                                        <i class="fa fa-facebook"></i> Facebook</button>
+                                </div>
+                            </div>
+
+                            <!-- Fund received status circle bar -->
+                            <div class="row align-items-center mb-4">
+                                <div class="col-auto">
+                                    <div class="progressing-indicator" t-set="percent"
+                                        t-attf-data-percent="{{campaign.id}}"></div>
+                                </div>
+                                <div class="col ps-0">
+                                    <h6>Raised</h6>
+                                    <h6>
+                                        <span class="text-theme">Rs.17,57,922</span> of Rs.<t
+                                            t-esc="campaign.fund_need" />
+                                    </h6>
+                                </div>
+                            </div>
+
+                            <!-- Story -->
+                            <div class="mb-4">
+                                <h4>Story</h4>
+                                <hr />
                                 <div>
                                     <t t-esc="campaign.description" />
                                 </div>
-
                             </div>
 
                             <div class="mb-4">
                                 <div class="card border box-theme-radius">
                                     <div class="card-body">
                                         <div class="row align-items-center">
-                                            <div class="col">
+                                            <div class="col text-center">
                                                 <h6 class="fw-normal">If something isn't right, we
                                                     will work with you to ensure no misuse occurs.
                                                 </h6>
@@ -76,66 +144,57 @@
 
                         <!-- Right side box -->
                         <div class="col">
-                            <div class="shadow-lg border rounded p-4 fixed-content">
+                            <div class="shadow-lg border rounded p-4 fixed-content bg-white w-25">
                                 <div>
-                                    <div class="mb-4">
-                                        <h4 class="mb-4">Need Rs.<t t-esc="campaign.amount" /></h4>
-                                        <div class="d-flex mb-4 me-2">
-                                            <button
-                                                class="btn btn-success btn-block rounded-pill w-100 me-2">
-                                                <i class="fa fa-whatsapp"></i> Whatsapp </button>
-                                            <button class="btn bg-blue btn-block rounded-pill w-100">
-                                                <i class="fa fa-facebook"></i> Facebook</button>
-                                        </div>
-                                    </div>
-
                                     <div class="mb-4">
                                         <div class="card border">
                                             <div class="card-body">
                                                 <div class="row align-items-center">
-                                                    <div class="col-auto pe-0">
-                                                        <!-- <div class="div-round">
-                                                            <i class="fa fa-circle text-primary"></i>
-                                                            <div>G</div>
-                                                        </div> -->
-                                                        <img src="" class="" />
-                                                    </div>
-                                                    <div class="col">
-                                                        <h6 class="fw-light">This fundraiser will
-                                                            benefit</h6>
-                                                        <h5>Gopinath</h5>
-                                                        <h6 class="fw-normal">from Erode, Tamil Nadu</h6>
-                                                    </div>
+                                                    <form id="donate_registration"
+                                                        t-attf-action="/campaign/donate/{{campaign.id}}"
+                                                        method="post"
+                                                        class="js_website_submit_form">
+
+                                                        <input type="hidden" name="csrf_token"
+                                                            t-att-value="request.csrf_token()" />
+                                                        <div class="col">
+                                                            <div class="mb-3">
+                                                                <input type="text"
+                                                                    t-attf-name="name"
+                                                                    class="form-control"
+                                                                    placeholder="Enter Name" />
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <input type="email"
+                                                                    t-attf-name="email"
+                                                                    class="form-control"
+                                                                    placeholder="Enter Email" />
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <input type="text"
+                                                                    t-attf-name="mobile"
+                                                                    class="form-control"
+                                                                    placeholder="Enter Mobile" />
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <input type="text"
+                                                                    t-attf-name="city"
+                                                                    class="form-control"
+                                                                    placeholder="Enter City" />
+                                                            </div>
+                                                            <button type="submit"
+                                                                class="btn btn-danger rounded-pill w-100">Donate
+                                                                Now</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                                <!-- <h5><t t-esc="campaign.create_uuid" /></h5> -->
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="row align-items-center mb-4">
-                                        <div class="col-auto">
-                                            <div id="progressing-indicator"></div>
-                                        </div>
-                                        <div class="col">
-                                            <h6>Raised</h6>
-                                            <h5>
-                                                <span class="text-theme">Rs.17,57,922</span> of
-                                                Rs.<t t-esc="campaign.amount" /> </h5>
-                                        </div>
-                                    </div>
-
-
-                                    <h5 class="pb-3">
-                                        <i class="fa fa-heartbeat"></i> Donate </h5>
-                                    <div class="text-center">
-                                        <button class="btn btn-danger rounded-pill btn-lg w-100"
-                                            id="initializeRazorpay">Donate Now</button>
-                                        <h6 class="mt-2">Card, Netbanking, Cheque Pickups</h6>
-                                    </div>
                                 </div>
                             </div>
-
                         </div>
+
                     </div>
                 </div>
             </t>

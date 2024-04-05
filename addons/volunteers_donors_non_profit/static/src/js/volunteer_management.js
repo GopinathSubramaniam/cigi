@@ -28,36 +28,7 @@ $(function () {
         ev.preventDefault();
     });
 
-    function buildProgressingBar(id) {
-        const parent_elem = document.getElementById(id);
-        if (parent_elem) {
-            let obj = { progress_color: '#28A745', text_color: '#000', percent: 90 };
-            let html = ` <div class="progress-group" id="progress-group">
-                            <div class="circular-progress" >
-                                <span class="circular-value" style="color:${obj.text_color}">${obj.percent}%</span>
-                            </div>
-                        </div>`;
-            parent_elem.innerHTML = html;
 
-            let elem = document.getElementById("progress-group");
-            console.log('Elem = ', elem);
-
-            if (elem) {
-                let progressStartValue = 0;
-                let progressStartEnd = obj.percent;
-                let speed = 50;
-                let progessTimer = setInterval(() => {
-                    progressStartValue++;
-                    if (progressStartValue == progressStartEnd) {
-                        clearInterval(progessTimer);
-                    }
-                    elem.querySelector(".circular-progress").style.background = `conic-gradient(${obj.progress_color} ${3.6 * progressStartValue}deg, #D5D5D5 0deg)`;
-                    elem.querySelector(".circular-value").innerHTML = progressStartValue + "%";
-                }, speed);
-            }
-        }
-
-    }
 
     /* const progressBar = document.querySelector('.progress-bar__fill');
 
@@ -76,7 +47,45 @@ $(function () {
     }
 
     animateProgressBar(); */
-
-    buildProgressingBar('progressing-indicator');
-
 });
+
+
+function buildProgressingBar(class_name) {
+    console.log('buildProgressingBar called');
+    const elems = document.querySelectorAll('.' + class_name);
+    if (elems && elems.length > 0) {
+        for (let i = 0; i < elems.length; i++) {
+            let percent = elems[i].attributes['data-percent'].value;
+            elems[i].style.color = "white";
+            // elems[i].style.backgroundColor = "black";
+            let html = ` <div class="progress-group" id="progress-group">
+                        <div class="circular-progress" >
+                            <span class="circular-value" style="color: #000">${percent}%</span>
+                        </div>
+                    </div>`;
+            elems[i].innerHTML = html;
+            let el = elems[i].querySelector(".progress-group");
+            console.log('el = ', el);
+            if (el) {
+                /* let progressStartValue = 0;
+                let progressStartEnd = obj.percent;
+                let speed = 50;
+                let progessTimer = setInterval(() => {
+                    progressStartValue++;
+                    if (progressStartValue == progressStartEnd) {
+                        clearInterval(progessTimer);
+                    }
+                    elem.querySelector(".circular-progress").style.background = `conic-gradient(${obj.progress_color} ${3.6 * progressStartValue}deg, #D5D5D5 0deg)`;
+                    elem.querySelector(".circular-value").innerHTML = progressStartValue + "%";
+                }, speed);
+                let progressStartEnd = obj.percent;
+                 */
+                el.querySelector(".circular-progress").style.background = `conic-gradient(#28A745 ${3.6 * percent}deg, #D5D5D5 0deg)`;
+                el.querySelector(".circular-value").innerHTML = percent + "%";
+            }
+        }
+    }
+}
+
+buildProgressingBar('progressing-indicator');
+buildProgressingBar('progressing-indicator-campaign');

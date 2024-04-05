@@ -47,7 +47,7 @@
     <record id="action_custom_campaign" model="ir.actions.act_window">
         <field name="name">Campaign</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">campaign</field>
+        <field name="res_model">volunteer.campaign</field>
         <field name="view_mode">kanban,tree,form</field>
     </record>
     <!-- </> Campaign CRUD operations -->
@@ -69,15 +69,17 @@
     <!-- <> Campaign List View -->
     <record id="action_custom_campaign_list" model="ir.ui.view">
         <field name="name">campaign.custom.tree.view</field>
-        <field name="model">campaign</field>
+        <field name="model">volunteer.campaign</field>
         <field name="arch" type="xml">
             <tree string="Campaigns">
-                <field name="images" />
+                <field name="first_image" />
+                <field name="second_image" />
+                <field name="third_image" />
                 <field name="title" />
-                <field name="created_for" />
                 <field name="campaign_type" />
                 <field name="mobile" />
-                <field name="amount" />
+                <field name="fund_need" />
+                <field name="fund_received" />
                 <field name="published" />
             </tree>
         </field>
@@ -87,19 +89,19 @@
     <!-- <> Campaign Kanban View -->
     <record id="action_custom_campaign_kanban" model="ir.ui.view">
         <field name="name">campaign.custom.kanban.view</field>
-        <field name="model">campaign</field>
+        <field name="model">volunteer.campaign</field>
         <field name="arch" type="xml">
             <kanban class="o_res_campaign_kanban">
                 <field name="title" />
-                <field name="images" />
-                <field name="amount" />
+                <field name="first_image" />
+                <field name="fund_need" />
                 <field name="mobile" />
 
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="o_kanban_image">
-                                <field name="images" widget="image" />
+                                <field name="first_image" widget="image" />
                             </div>
                             <div class="oe_kanban_details">
                                 <strong class="o_kanban_record_title">
@@ -108,8 +110,8 @@
                                 <div t-if="record.mobile.value">
                                     <t t-esc="record.mobile.value" />
                                 </div>
-                                <div t-if="record.amount.value">
-                                    <t t-esc="record.amount.value" />
+                                <div t-if="record.fund_need.value">
+                                    <t t-esc="record.fund_need.value" />
                                 </div>
                             </div>
                         </div>

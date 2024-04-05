@@ -7,4 +7,4 @@ access_volunteer_type_rights,access.volunteer.type.rights,model_volunteer_type,b
 access_volunteer_type_rights_sales,access.volunteer.type.rights.sales,model_volunteer_type,sales_team.group_sale_manager,1,1,1,1
 access_volunteer_working_details_rights,access.volunteer.working.details.rights,model_volunteer_working_details,base.group_user,1,0,0,0
 access_volunteer_working_details_rights_sales,access.volunteer.working.details.rights.sales,model_volunteer_working_details,project.group_project_user,1,1,1,1
-access_campaign,access_campaign,model_campaign,base.group_user,1,1,1,1
+access_volunteer_campaign,access.volunteer.campaign.rights,model_volunteer_campaign,base.group_user,1,1,1,1

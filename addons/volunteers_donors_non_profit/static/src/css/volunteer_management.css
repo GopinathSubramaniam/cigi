@@ -40,8 +40,8 @@
 }
 
 .circular-progress {
-    height: 90px;
-    width: 90px;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -53,16 +53,16 @@
 .circular-progress::before {
     content: "";
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-color: #FFF;
 }
 
 .circular-value {
     position: relative;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 400;
 }
 
 .text-theme {
@@ -72,4 +72,23 @@
 .fixed-content {
     bottom: unset;
     position: fixed;
+    top: 5rem;
+    z-index: 9;
+}
+
+.custom-text {
+    text-transform: lowercase;
+}
+
+.custom-text::first-letter {
+    text-transform: uppercase;
+    /* Make the first letters uppercase      */
+}
+
+hr:not([size]) {
+    height: 1px;
+}
+
+hr {
+    color: var(--gray);
 }
