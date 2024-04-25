@@ -8,6 +8,7 @@ from . import crm_lead
 from . import project_project
 from . import volunteer_working_detail
 from . import volunteer_campaign
+from . import volunteer_campaign_payment
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

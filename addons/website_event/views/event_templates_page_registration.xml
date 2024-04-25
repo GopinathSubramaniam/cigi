@@ -532,7 +532,10 @@
                                             <!-- <span t-if="tickets" t-field="tickets.name"/> -->
                                             <!-- <span t-else="">Registration</span> --> Choose
                                             the No of Participants </h5>
-                                        <small>( For partial payment, please contact # 80866 64006 )</small>
+                                        <ul>
+                                            <li>For partial payment, please contact # 80866 64006</li>
+                                            <li>Payments are not refundable</li>
+                                        </ul>
                                         <!-- <t t-if="tickets.description">
                                     <small t-field="tickets.description" class="text-muted py-2"/>
                                     <br/>

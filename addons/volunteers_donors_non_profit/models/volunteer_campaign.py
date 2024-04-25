@@ -71,3 +71,11 @@ class Campaign(models.Model):
         string="Description",
         required=True
     )
+
+    # Get all associated campaigns objects
+    volunteer_campaign_payment_ids = fields.One2many(
+        'volunteer.campaign.payment',
+        'volunteer_campaign_id',
+        string='Payments',
+         copy=False,
+    )

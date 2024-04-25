@@ -59,7 +59,37 @@ class CampaignController(http.Controller):
                 })],
             }
             created_bill = acc_move_model.create(inv_data)
-            # created_bill.action_invoice_open()
+
+            print("Bill State = ", created_bill.state)
+
+            # bill = acc_move_model.browse(created_bill.id)
+            
+            # Confirm the bill
+            # created_bill._post()
+            # print("After Bill State = ", created_bill.state)
+
+            # Confirming the payment
+            # created_bill.action_post() - Posting payment entries
+            print("After Bill State = ", created_bill.state)
+
+            # created_bill.action_send_and_print();
+            # created_bill.action_register_payment(self);
+            print("After Bill State = ", created_bill.state)
+
+            # <> Create campaign payment data
+            # campaign_obj = request.env['volunteer.campaign'].sudo().search([('id','=', campaign_id)]);
+            campaign_payment_data = {
+                'partner_id': created_contact.id,
+                'volunteer_campaign_id':campaign_id,
+                'amount': 0
+            };
+            campaign_payment_model = request.env['volunteer.campaign.payment'];
+            campaign_payment_model.create(campaign_payment_data);
+            print("================== Campaign Payment Created ==================")
+            # </>
+
+            # Send PDF in email
+            # created_bill._generate_pdf_and_send_invoice();
 
             # Confirm the bill
             # acc_move_model.action_invoice_open(); 

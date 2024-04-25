@@ -33,6 +33,15 @@
                     </group>
                 </page>
             </xpath>
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button"
+                    groups="base.group_user"
+                    type="object"
+                    icon="fa-bullhorn"
+                    name="action_custom_campaign">
+                    <field string="Campaigns" name="campaign_count" widget="statinfo"/>
+                </button>
+            </div>
         </field>
     </record>
      <record id="custom_action_volunteer_add" model="ir.actions.act_window">

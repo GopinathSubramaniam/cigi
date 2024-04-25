@@ -8,6 +8,8 @@ class ResPartner(models.Model):
     
     _inherit = 'res.partner'
 
+    campaign_count = fields.Integer('# Campaigns', compute='compute_campaign_count', store=False)
+
     is_volunteer = fields.Boolean(
         string="Is Volunteer?",
         copy=True
@@ -31,3 +33,19 @@ class ResPartner(models.Model):
         string='Volunteer Skills',
         copy=True
     )
+
+    def action_custom_campaign(self):
+        print("::::::::::::::: 1 :::::::::::::::::")
+        action = self.env["ir.actions.actions"]._for_xml_id("volunteers_donors_non_profit.action_custom_campaign")
+        print(":::::::::::::::: 2 ::::::::::::::::")
+        action['context'] = {}
+        action['domain'] = [('volunteer_campaign_payment_ids.partner_id', 'child_of', self.ids)]
+        return action
+
+    
+    def compute_campaign_count(self):
+        self.campaign_count = 0
+        for partner in self:
+            partner.campaign_count = self.env['volunteer.campaign'].search_count([('volunteer_campaign_payment_ids.partner_id', 'child_of', partner.ids)])
+
+

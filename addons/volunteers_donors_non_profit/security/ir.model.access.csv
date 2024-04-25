@@ -8,3 +8,4 @@ access_volunteer_type_rights_sales,access.volunteer.type.rights.sales,model_volu
 access_volunteer_working_details_rights,access.volunteer.working.details.rights,model_volunteer_working_details,base.group_user,1,0,0,0
 access_volunteer_working_details_rights_sales,access.volunteer.working.details.rights.sales,model_volunteer_working_details,project.group_project_user,1,1,1,1
 access_volunteer_campaign,access.volunteer.campaign.rights,model_volunteer_campaign,base.group_user,1,1,1,1
+access_volunteer_campaign_payment,access.volunteer.campaign.payment.rights,model_volunteer_campaign_payment,base.group_user,1,1,1,1
