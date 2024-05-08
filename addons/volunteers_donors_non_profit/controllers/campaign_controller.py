@@ -40,7 +40,7 @@ class CampaignController(http.Controller):
         
         
         # Get default bill journal object
-        bill_default_account = request.env['account.account'].sudo().search([('code','=', 600000)]);
+        bill_default_account = request.env['account.account'].sudo().search([('code','=', 200110)]);
 
         if not bill_default_account:
             raise UserError('No default journal is available for bill')
@@ -81,7 +81,7 @@ class CampaignController(http.Controller):
             campaign_payment_data = {
                 'partner_id': created_contact.id,
                 'volunteer_campaign_id':campaign_id,
-                'amount': 0
+                'amount': 200
             };
             campaign_payment_model = request.env['volunteer.campaign.payment'];
             campaign_payment_model.create(campaign_payment_data);
@@ -93,7 +93,7 @@ class CampaignController(http.Controller):
 
             # Confirm the bill
             # acc_move_model.action_invoice_open(); 
-            success = "1";
+            success = "Payment Succeeded";
 
 
         return success;

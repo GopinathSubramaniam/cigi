@@ -46,6 +46,12 @@ class Campaign(models.Model):
         default = 0.00
     )
 
+    fund_received_percent = fields.Float(
+        default = 0.00,
+        store = False,
+        compute = '_calculate_percent'
+    )
+
     end_date = fields.Date(
         string="Campaign End Date",
         required = True
@@ -67,6 +73,11 @@ class Campaign(models.Model):
         string="Published"
     )
 
+    youtube_url = fields.Char(
+        string="Youtube URL",
+        required=False
+    )
+
     description = fields.Text(
         string="Description",
         required=True
@@ -77,5 +88,14 @@ class Campaign(models.Model):
         'volunteer.campaign.payment',
         'volunteer_campaign_id',
         string='Payments',
-         copy=False,
+        copy=False,
     )
+
+    def _calculate_percent(self):
+        print('Calculate Received Fund Percentage')
+        for o in self:
+            if o.fund_need > 0:
+                o.fund_received_percent = round((o.fund_received / o.fund_need ) * 100, 2);
+            else:
+                o.fund_received_percent = 0.00
+

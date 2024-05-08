@@ -49,6 +49,14 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">volunteer.campaign</field>
         <field name="view_mode">kanban,tree,form</field>
+        <!-- <field name="arch" type="xml">
+            <field name="volunteer_campaign_payment_ids">
+                <tree>
+                    <field name="id" />
+                    <field name="amount" />
+                </tree>
+            </field>
+        </field> -->
     </record>
     <!-- </> Campaign CRUD operations -->
 
@@ -129,6 +137,7 @@
     <menuitem id="menu_parent_menu" name="Volunteers and Donors"
         web_icon="volunteers_donors_non_profit,static/description/web_icon.png" />
     <menuitem id="menu_add_sub_menu" name="Configuration" parent="menu_parent_menu" sequence="4" />
+
     <menuitem id="menu_volunteer_type_menu" name="Volunteer Types" parent="menu_add_sub_menu"
         sequence="1" action="action_custom_volunteer_type" />
     <menuitem id="menu_volunteer_skills_menu" name="Volunteer Skills" parent="menu_add_sub_menu"
@@ -140,5 +149,5 @@
     <menuitem id="menu_donor_add_menu" name="Donors" parent="menu_parent_menu" sequence="2"
         action="custom_action_donors_add" />
     <menuitem id="menu_donor_campaigns" name="Campaigns" parent="menu_parent_menu" sequence="3"
-        action="action_custom_campaign"/>
+        action="action_custom_campaign" />
 </odoo>

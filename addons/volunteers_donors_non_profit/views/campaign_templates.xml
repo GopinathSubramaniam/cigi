@@ -5,26 +5,92 @@
     <template id="website_campaigns">
         <t t-name="website.campaigns">
             <t t-call="website.layout">
+                <!-- Banner -->
+                <div class="row align-items-center"
+                    style="padding: 5rem; align-content: center; color: white; 
+                    background: url('/volunteers_donors_non_profit/static/description/shapecharity_cover.jpeg'); height: 500px;">
+                    <div class="col-6 col-md-7 col-lg-7">
+                        <h1>Donate now to <br /> make an impact</h1>
+                        <h6>Make an impact by donating directly for a cause. We ensure that the
+                            money donated goes directly <br />towards reaching the goal of project</h6>
+                    </div>
+                    <div class="col-6 col-md-5 col-lg-5"
+                        style="border-left: 2px solid #fff; padding-left: 4rem;">
+                        <div class="row align-items-center mb-4">
+                            <div class="col-auto">
+                                <i class="fa fa-heartbeat fa-3x" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-auto">
+                                <h3>9.5M+</h3>
+                                <small>Students Imapcted</small>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-4">
+                            <div class="col-auto">
+                                <i class="fa fa-users fa-3x" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-auto">
+                                <h3>2000+</h3>
+                                <small>Trained Resource Person</small>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-4">
+                            <div class="col-auto">
+                                <i class="fa fa-tasks fa-3x" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-auto">
+                                <h3>25+</h3>
+                                <small>Projects Completed</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campaigns list -->
                 <div class="container mt-5">
                     <div class="row">
                         <t t-foreach="data" t-as="c">
                             <div class="col-12 col-md-4 col-lg-3 mb-4">
                                 <a t-attf-href="/campaign/detail/{{c.id}}"
                                     class="text-decoration-none">
-                                    <div class="card">
+                                    <div class="card" style="height: 400px;">
                                         <img class="card-img-top img-fluid"
                                             t-att-src="image_data_uri(c.first_image)"
                                             alt="Campaign Image" />
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-auto">
-                                                    <div class="progressing-indicator-campaign"
-                                                        t-set="percent"
-                                                        t-attf-data-percent="{{c.id}}"></div>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <h5>
+                                                        <t t-esc="c.title" />
+                                                    </h5>
+                                                    <div t-if="c.fund_need > 0">
+                                                        <small class="fw-bold">
+                                                            <span class="text-info"> Rs. <t
+                                                                    t-esc="c.fund_received" />
+                                                            </span>
+                                                            out of Rs.<t
+                                                                t-esc="c.fund_need" />
+                                                        </small>
+                                                        <div class="progress mb-1"
+                                                            style="height: 12px;">
+                                                            <div
+                                                                class="progress-bar progress-bar-striped fw-bolder"
+                                                                role="progressbar"
+                                                                t-attf-style="width: {{c.fund_received_percent}}%; font-size: 0.6rem;"
+                                                                aria-valuenow="25" aria-valuemin="0"
+                                                                aria-valuemax="100">
+                                                                <t
+                                                                    t-esc="c.fund_received_percent" />
+                                                                % </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col ps-0">
-                                                    <h6 class="card-title" t-esc="c.title"></h6>
-                                                    <p class="card-text" t-esc="c.fund_need"></p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer bg-white border-0">
+                                            <div class="row">
+                                                <div class="col text-end">
+                                                    <button class="btn btn-info btn-sm">Donate Now</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -54,7 +120,7 @@
                             <hr />
 
                             <!-- Campaign Images -->
-                            <div class="mb-4">
+                            <div class="mb-2">
                                 <div id="carouselExample" class="carousel slide">
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
@@ -84,11 +150,10 @@
                                         <span class="visually-hidden">Next</span>
                                     </button>
                                 </div>
-
                             </div>
 
                             <!-- Fund need & share buttons -->
-                            <div class="mb-4">
+                            <!-- <div class="mb-4">
                                 <h4 class="mb-4">Need Rs.<t t-esc="campaign.fund_need" /></h4>
                                 <div class="d-flex mb-4 me-2">
                                     <button
@@ -97,32 +162,62 @@
                                     <button class="btn bg-blue btn-block rounded-pill w-100">
                                         <i class="fa fa-facebook"></i> Facebook</button>
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <!-- Fund received status circle bar -->
-                            <div class="row align-items-center mb-4">
-                                <div class="col-auto">
-                                    <div class="progressing-indicator" t-set="percent"
-                                        t-attf-data-percent="{{campaign.id}}"></div>
-                                </div>
-                                <div class="col ps-0">
-                                    <h6>Raised</h6>
-                                    <h6>
-                                        <span class="text-theme">Rs.17,57,922</span> of Rs.<t
+                            <!-- Fund received progress bar -->
+                            <div class="row align-items-center" t-if="campaign.fund_need > 0">
+                                <div class="col">
+                                    <div class="progress mb-1" style="height: 12px;">
+                                        <div class="progress-bar progress-bar-striped fw-bolder"
+                                            role="progressbar"
+                                            t-attf-style="width: {{campaign.fund_received_percent}}%; font-size: 0.6rem;"
+                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                            <t t-esc="campaign.fund_received_percent" />% </div>
+                                    </div>
+                                    <small class="fw-bold mb-0">Raised</small>
+                                    <h5>
+                                        <span class="text-info"> Rs. <t
+                                                t-esc="campaign.fund_received" />
+                                        </span>
+                                        out of Rs.<t
                                             t-esc="campaign.fund_need" />
-                                    </h6>
+                                    </h5>
                                 </div>
                             </div>
 
                             <!-- Story -->
                             <div class="mb-4">
-                                <h4>Story</h4>
-                                <hr />
-                                <div>
-                                    <t t-esc="campaign.description" />
+                                <t t-esc="campaign.description" />
+                            </div>
+
+                            <!-- Display video URL -->
+                            <div class="mb-4" t-if="campaign.youtube_url">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item w-100"
+                                        style="height: 500px"
+                                        t-att-src="campaign.youtube_url"></iframe>
                                 </div>
                             </div>
 
+                            <hr />
+
+                            <!-- Social Icons -->
+                            <div class="row mb-4 justify-content-end">
+                                <div class="col-auto">
+                                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-linkedin-square" aria-hidden="true"></i>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-twitter-square" aria-hidden="true"></i>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-whatsapp" aria-hidden="true"></i>
+                                </div>
+                            </div>
+
+                            <!-- Technical support -->
                             <div class="mb-4">
                                 <div class="card border box-theme-radius">
                                     <div class="card-body">
@@ -144,52 +239,111 @@
 
                         <!-- Right side box -->
                         <div class="col">
-                            <div class="shadow-lg border rounded p-4 fixed-content bg-white w-25">
-                                <div>
-                                    <div class="mb-4">
-                                        <div class="card border">
-                                            <div class="card-body">
-                                                <div class="row align-items-center">
-                                                    <form id="donate_registration"
-                                                        t-attf-action="/campaign/donate/{{campaign.id}}"
-                                                        method="post"
-                                                        class="js_website_submit_form">
-
-                                                        <input type="hidden" name="csrf_token"
-                                                            t-att-value="request.csrf_token()" />
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                <input type="text"
-                                                                    t-attf-name="name"
-                                                                    class="form-control"
-                                                                    placeholder="Enter Name" />
+                            <div class="shadow-lg rounded p-4 fixed-content bg-white w-25">
+                                <div class="card border-0">
+                                    <div class="card-body">
+                                        <form id="donate_registration"
+                                            t-attf-action="/campaign/donate/{{campaign.id}}"
+                                            method="post"
+                                            class="js_website_submit_form">
+                                            <!-- Row 1 -->
+                                            <div class="row align-items-center">
+                                                <input type="hidden" name="csrf_token"
+                                                    t-att-value="request.csrf_token()" />
+                                                <div class="col-12">
+                                                    <div class="mb-3">
+                                                        <input type="number"
+                                                            t-attf-name="amount"
+                                                            class="form-control form-control-sm border-0 border-bottom"
+                                                            placeholder="INR &#8377;" />
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <input type="text"
+                                                            t-attf-name="name"
+                                                            class="form-control form-control-sm border-0 border-bottom"
+                                                            placeholder="Name" />
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <input type="email"
+                                                            t-attf-name="email"
+                                                            class="form-control form-control-sm border-0 border-bottom"
+                                                            placeholder="Email" />
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <div class="row">
+                                                            <div class="col-4 pe-0">
+                                                                <select type="select"
+                                                                    class="form-control form-control-sm border-0 border-bottom"
+                                                                    placeholder="Type of ID">
+                                                                    <option value="+91">+91</option>
+                                                                </select>
                                                             </div>
-                                                            <div class="mb-3">
-                                                                <input type="email"
-                                                                    t-attf-name="email"
-                                                                    class="form-control"
-                                                                    placeholder="Enter Email" />
-                                                            </div>
-                                                            <div class="mb-3">
+                                                            <div class="col ps-2">
                                                                 <input type="text"
                                                                     t-attf-name="mobile"
-                                                                    class="form-control"
-                                                                    placeholder="Enter Mobile" />
+                                                                    class="form-control form-control-sm border-0 border-bottom"
+                                                                    placeholder="Mobile" />
                                                             </div>
-                                                            <div class="mb-3">
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <input type="text"
+                                                            t-attf-name="city"
+                                                            class="form-control form-control-sm border-0 border-bottom"
+                                                            placeholder="City" />
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <div class="row">
+                                                            <div class="col-4 pe-2">
+                                                                <select type="select"
+                                                                    class="form-control form-control-sm border-0 border-bottom"
+                                                                    placeholder="Type of ID">
+                                                                    <option value="PAN">PAN</option>
+                                                                    <option value="AADHAAR">
+                                                                        Aadhaar</option>
+                                                                    <option value="LICENCE">
+                                                                        Licence</option>
+                                                                    <option value="VOTER">Voter
+                                                                        Card</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col ps-0">
                                                                 <input type="text"
                                                                     t-attf-name="city"
-                                                                    class="form-control"
-                                                                    placeholder="Enter City" />
+                                                                    class="form-control form-control-sm border-0 border-bottom"
+                                                                    placeholder="Type of ID" />
                                                             </div>
-                                                            <button type="submit"
-                                                                class="btn btn-danger rounded-pill w-100">Donate
-                                                                Now</button>
                                                         </div>
-                                                    </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+
+                                            <!-- Row 2 -->
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <small style="font-size: 0.7em">*
+                                                        Internationally issued
+                                                        Credit/Debit
+                                                        cards not accepted</small>
+                                                </div>
+                                            </div>
+
+                                            <!-- Row 3 -->
+                                            <div class="row">
+                                                <div class="col">
+                                                    <img class="img-fluid"
+                                                        src="https://t4.ftcdn.net/jpg/05/76/85/01/360_F_576850175_DfN3gojvgeZtFxAWURuCgLUgCuRiL14F.jpg" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col d-grid gap-2">
+                                                    <button type="submit"
+                                                        class="btn btn-info rounded-pill w-100">Donate
+                                                        Now</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
