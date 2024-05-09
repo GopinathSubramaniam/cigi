@@ -21,3 +21,6 @@ class VolunteerCampaignPayment(models.Model):
         digits=(12,2),
         default = 0.00,
     )
+
+    user_email = fields.Char(string='Email', related='partner_id.email')
+    user_mobile = fields.Char(string='Mobile', related='partner_id.mobile')

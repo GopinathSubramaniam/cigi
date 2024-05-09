@@ -49,32 +49,58 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">volunteer.campaign</field>
         <field name="view_mode">kanban,tree,form</field>
-        <!-- <field name="arch" type="xml">
-            <field name="volunteer_campaign_payment_ids">
-                <tree>
-                    <field name="id" />
-                    <field name="amount" />
-                </tree>
-            </field>
-        </field> -->
     </record>
     <!-- </> Campaign CRUD operations -->
 
-    <!-- <> Campaign form - Working on it -->
-    <!-- <record model="ir.ui.view" id="hr_recruitment_ext_form">
-        <field name="name">campaign.form</field>
-        <field name="model">campaign</field>
+    <!-- <> Custom campaign form - Working on it -->
+    <record model="ir.ui.view" id="hr_recruitment_ext_form">
+        <field name="name">volunteer.campaign.custom.form.view</field>
+        <field name="model">volunteer.campaign</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <field name="partner_id" position="before">
-                <field name="doj" />
-                <field name="presentsal" />
-            </field>
+            <form string="Campaign">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="project_name" />
+                            <field name="title" />
+                            <field name="fund_need" />
+                            <field name="end_date" />
+                            <field name="first_image" />
+                            <field name="third_image" />
+                        </group>
+                        <group>
+                            <field name="campaign_type" />
+                            <field name="address" />
+                            <field name="fund_received" readonly="true"/>
+                            <field name="youtube_url" />
+                            <field name="second_image" />
+                            <field name="published" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="description" string="Description">
+                            <field name="description" />
+                        </page>
+                        <page name="volunteer_campaign_payment_ids" string="Donations">
+                            <field name="volunteer_campaign_payment_ids">
+                                <tree create="false" edit="false" delete="false" editable="top">
+                                    <field name="create_date" />
+                                    <field name="partner_id" />
+                                    <field name="user_email" />
+                                    <field name="user_mobile" />
+                                    <field name="amount" widget="monetary"  options="{'currency_field': 'currency_id'}" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
         </field>
-    </record> -->
-    <!-- </> Campaign form -->
+    </record>
+    <!-- </> Custom Campaign form -->
 
-    <!-- <> Campaign List View -->
+    <!-- <> Custom Campaign List View -->
     <record id="action_custom_campaign_list" model="ir.ui.view">
         <field name="name">campaign.custom.tree.view</field>
         <field name="model">volunteer.campaign</field>
@@ -92,9 +118,9 @@
             </tree>
         </field>
     </record>
-    <!-- </> Campaign List View -->
+    <!-- </> Custom Campaign List View -->
 
-    <!-- <> Campaign Kanban View -->
+    <!-- <> Custom Campaign Kanban View -->
     <record id="action_custom_campaign_kanban" model="ir.ui.view">
         <field name="name">campaign.custom.kanban.view</field>
         <field name="model">volunteer.campaign</field>
@@ -128,11 +154,8 @@
             </kanban>
         </field>
     </record>
-    <!-- </> Campaign Kanban View -->
+    <!-- </> Custom Campaign Kanban View -->
 
-    <!-- <record id="campaign_menu_campaign_action" model="ir.ui.view">
-        <field name="action" ref="action_custom_campaign" />
-    </record> -->
 
     <menuitem id="menu_parent_menu" name="Volunteers and Donors"
         web_icon="volunteers_donors_non_profit,static/description/web_icon.png" />

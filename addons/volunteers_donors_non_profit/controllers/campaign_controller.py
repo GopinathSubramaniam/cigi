@@ -7,7 +7,7 @@ class CampaignController(http.Controller):
 
     @http.route(['/campaign/list'], type="http", auth="public", website=True, sitemap=False)
     def list(self, **kwargs): 
-        campaigns = request.env['volunteer.campaign'].sudo().search([])
+        campaigns = request.env['volunteer.campaign'].sudo().search([('published','=', 'true')])
         return request.render('volunteers_donors_non_profit.website_campaigns', {"data": campaigns})
 
     @http.route(['/campaign/detail/<int:campaign_id>'], type="http", auth="public", website=True, sitemap=False)

@@ -78,7 +78,7 @@ class Campaign(models.Model):
         required=False
     )
 
-    description = fields.Text(
+    description = fields.Html(
         string="Description",
         required=True
     )

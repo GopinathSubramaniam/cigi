@@ -123,17 +123,18 @@
                             <div class="mb-2">
                                 <div id="carouselExample" class="carousel slide">
                                     <div class="carousel-inner">
-                                        <div class="carousel-item active">
+                                        <div class="carousel-item active"
+                                            t-if="campaign.first_image">
                                             <img class="d-block w-100"
                                                 t-att-src="image_data_uri(campaign.first_image)"
                                                 alt="Campaign Image" />
                                         </div>
-                                        <div class="carousel-item">
+                                        <div class="carousel-item" t-if="campaign.second_image">
                                             <img class="d-block w-100"
                                                 t-att-src="image_data_uri(campaign.second_image)"
                                                 alt="Campaign Image" />
                                         </div>
-                                        <div class="carousel-item">
+                                        <div class="carousel-item" t-if="campaign.third_image">
                                             <img class="d-block w-100"
                                                 t-att-src="image_data_uri(campaign.third_image)"
                                                 alt="Campaign Image" />
@@ -151,18 +152,6 @@
                                     </button>
                                 </div>
                             </div>
-
-                            <!-- Fund need & share buttons -->
-                            <!-- <div class="mb-4">
-                                <h4 class="mb-4">Need Rs.<t t-esc="campaign.fund_need" /></h4>
-                                <div class="d-flex mb-4 me-2">
-                                    <button
-                                        class="btn btn-success btn-block rounded-pill w-100 me-2">
-                                        <i class="fa fa-whatsapp"></i> Whatsapp </button>
-                                    <button class="btn bg-blue btn-block rounded-pill w-100">
-                                        <i class="fa fa-facebook"></i> Facebook</button>
-                                </div>
-                            </div> -->
 
                             <!-- Fund received progress bar -->
                             <div class="row align-items-center" t-if="campaign.fund_need > 0">
