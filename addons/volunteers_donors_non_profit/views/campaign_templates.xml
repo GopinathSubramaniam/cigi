@@ -6,9 +6,16 @@
         <t t-name="website.campaigns">
             <t t-call="website.layout">
                 <!-- Banner -->
-                <div class="row align-items-center"
+                <div class="row">
+                    <div class="col">
+                        <img
+                            src="/volunteers_donors_non_profit/static/description/campaign_banner.jpeg" />
+                    </div>
+                </div>
+                <!-- <div class="row align-items-center"
                     style="padding: 5rem; align-content: center; color: white; 
-                    background: url('/volunteers_donors_non_profit/static/description/shapecharity_cover.jpeg'); height: 500px;">
+                    background: url('/volunteers_donors_non_profit/static/description/campaign_banner.jpeg'); height:
+                500px;">
                     <div class="col-6 col-md-7 col-lg-7">
                         <h1>Donate now to <br /> make an impact</h1>
                         <h6>Make an impact by donating directly for a cause. We ensure that the
@@ -44,10 +51,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Campaigns list -->
-                <div class="container mt-5">
+                <div class="container mt-4">
                     <div class="row">
                         <t t-foreach="data" t-as="c">
                             <div class="col-12 col-md-4 col-lg-3 mb-4">
@@ -90,7 +97,7 @@
                                         <div class="card-footer bg-white border-0">
                                             <div class="row">
                                                 <div class="col text-end">
-                                                    <button class="btn btn-info btn-sm">Donate Now</button>
+                                                    <button class="btn btn-info w-100">View Details</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -338,6 +345,27 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    <!-- </> -->
+
+    <!-- <> Campaign donataion success -->
+    <template id="website_campaign_donation_success">
+        <t t-name="website.campaigns">
+            <t t-call="website.layout">
+                <div class="row mt-4">
+                    <div class="col text-center mb-4">
+                        <h2>Thanks for your donation</h2>
+                        <img class="w-25"
+                            src="/volunteers_donors_non_profit/static/description/payment-success.gif" />
+                        <div>
+                            <a href="/campaign/list" class="btn btn-primary">
+                                <i class="fa fa-chevron-left" aria-hidden="true"></i> Back to
+                                campaigns </a>
+                        </div>
                     </div>
                 </div>
             </t>

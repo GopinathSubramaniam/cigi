@@ -4,6 +4,7 @@ class Campaign(models.Model):
     _name = 'volunteer.campaign'
     _description = "Campaign"
 
+
     project_name = fields.Char(
         string = "Project Name",
     )
@@ -28,11 +29,6 @@ class Campaign(models.Model):
         required = True
     )
 
-    mobile = fields.Char(
-        string = "Mobile Number",
-        required = True
-    )
-
     fund_need = fields.Float(
         string="Fund Need",
         digits=(12,2),
@@ -40,10 +36,19 @@ class Campaign(models.Model):
         required = True
     )
 
+    # fund_received = fields.Float(
+    #     string="Fund Received",
+    #     digits=(12,2),
+    #     default = 0.00,
+    #     store = False,
+    #     compute = "fund_received"
+    # )
+
     fund_received = fields.Float(
-        string="Fund Received",
+        string="Fund Received", 
         digits=(12,2),
-        default = 0.00
+        store = False,
+        compute = "_fund_received"
     )
 
     fund_received_percent = fields.Float(
@@ -91,6 +96,15 @@ class Campaign(models.Model):
         copy=False,
     )
 
+    def _fund_received(self):
+        self.fund_received = 0.00
+        for c in self:
+            data = self.env['volunteer.campaign.payment'].sudo().search([('volunteer_campaign_id', '=', c.id)])
+            if data is not None:
+                for o in data:
+                    print("O = ", o);
+                    c.fund_received += o.amount
+    
     def _calculate_percent(self):
         print('Calculate Received Fund Percentage')
         for o in self:
