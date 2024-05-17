@@ -89,6 +89,7 @@
                                     <field name="partner_id" />
                                     <field name="user_email" />
                                     <field name="user_mobile" />
+                                    <field name="acc_payment_number" />
                                     <field name="amount" widget="monetary"
                                         options="{'currency_field': 'currency_id'}" />
                                 </tree>

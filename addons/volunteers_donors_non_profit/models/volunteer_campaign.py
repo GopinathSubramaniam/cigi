@@ -102,11 +102,9 @@ class Campaign(models.Model):
             data = self.env['volunteer.campaign.payment'].sudo().search([('volunteer_campaign_id', '=', c.id)])
             if data is not None:
                 for o in data:
-                    print("O = ", o);
                     c.fund_received += o.amount
     
     def _calculate_percent(self):
-        print('Calculate Received Fund Percentage')
         for o in self:
             if o.fund_need > 0:
                 o.fund_received_percent = round((o.fund_received / o.fund_need ) * 100, 2);

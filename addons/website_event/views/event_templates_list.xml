@@ -55,10 +55,12 @@
             <div
                 class="o_wevent_index_topbar_filters d-flex d-print-none align-items-center justify-content-end flex-wrap gap-2 w-100">
                 <h2 class="my-0 me-auto pe-sm-4">Events</h2>
-                <div class="alert bg-dark text-white d-flex align-items-center gradeFilter p-1 my-2 px-3" role="alert">
+                <div
+                    class="alert bg-dark text-white d-flex align-items-center gradeFilter p-1 my-2 px-3"
+                    role="alert">
                     <i class="fa fa-info-circle"></i>
                     <div class="px-2">
-                        Please select grade to filter the events
+                        Use filters to search the events
                     </div>
                     <i class="fa fa-caret-right d-none d-lg-block"></i>
                     <i class="fa fa-caret-down d-block d-lg-none mobileViewIcon"></i>

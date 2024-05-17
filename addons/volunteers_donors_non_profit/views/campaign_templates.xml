@@ -356,18 +356,32 @@
     <template id="website_campaign_donation_success">
         <t t-name="website.campaigns">
             <t t-call="website.layout">
-                <div class="row mt-4">
-                    <div class="col text-center mb-4">
-                        <h2>Thanks for your donation</h2>
-                        <img class="w-25"
-                            src="/volunteers_donors_non_profit/static/description/payment-success.gif" />
-                        <div>
-                            <a href="/campaign/list" class="btn btn-primary">
-                                <i class="fa fa-chevron-left" aria-hidden="true"></i> Back to
-                                campaigns </a>
+                <div class="container">
+                    <div class="row mt-4">
+                        <div class="col text-center mb-4">
+                            <h2>Thank you for your incredibly generous donation to CIGI!</h2>
+                            <h6>
+                                <i>Your support is vital in shaping the future of the next
+                                    generation.
+                                    Your contribution will help us continue our mission. With your
+                                    help,
+                                    we can make a real difference. Expect a receipt in your email
+                                    inbox
+                                    soon. Once again, thank you for your kindness and dedication to
+                                    our
+                                    cause.</i>
+                            </h6>
+                            <img class="w-25"
+                                src="/volunteers_donors_non_profit/static/description/payment-success.gif" />
+                            <div>
+                                <a href="/campaign/list" class="btn btn-primary">
+                                    <i class="fa fa-chevron-left" aria-hidden="true"></i> Back to
+                                    campaigns </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </t>
         </t>
     </template>
