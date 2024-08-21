@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    
+        <record model ="ir.ui.view" id="project_task_import_wizard_form_view">
+           <field name="name">multiple.task.import.wizard.view</field>
+           <field name="model">multiple.task.import</field>
+           <field name="arch" type="xml">
+               <form string="Projects and Tasks Import Wizard">
+                   <separator string="This wizard will import Projects and Tasks from selected excel file. Make sure you have selected .xls/xlsx file..."/>
+                   <group>
+                      <group>
+                        <field name="company_id" class="oe_inline"/>
+                      </group>
+                      <group>
+                        <field name="import_by" widget="radio"/>
+                      </group>
+                   </group>                
+                   <!-- <group> -->
+                       <div>
+                            <field name="files" class="oe_inline" filename="datas_fname" required="True"/>
+                       </div>
+                   <!-- </group> -->
+                   <footer>
+                        <button string="Import" name="import_project_task" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                   </footer>
+               </form>
+           </field>
+       </record>
+       
+       <record model="ir.actions.act_window" id="action_multiple_project_task_import_wizard">
+           <field name="name">Projects and Tasks Import</field>
+           <field name="res_model">multiple.task.import</field>
+           <field name="view_mode">form</field>
+           <field name="target">new</field>
+       </record>
+       
+        <menuitem name="Import" id="menu_project_task_import" parent="project.menu_main_pm" 
+                  groups="project.group_project_manager" />
+        <menuitem name="Import Project and Task"  
+                  id="import_multiple_project_task_excel" 
+                  parent="menu_project_task_import" 
+                  action="action_multiple_project_task_import_wizard"
+                  groups="project.group_project_manager"
+                  sequence="150"/>
+       
+    </data>
+</odoo>

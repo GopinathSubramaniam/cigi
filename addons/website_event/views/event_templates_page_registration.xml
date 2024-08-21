@@ -533,7 +533,7 @@
                                             <!-- <span t-else="">Registration</span> --> Choose
                                             the No of Participants </h5>
                                         <ul>
-                                            <li>For partial payment, please contact # 80866 64006</li>
+                                            <!-- <li>For partial payment, please contact # 80866 64006</li> -->
                                             <li>Payments are not refundable</li>
                                         </ul>
                                         <!-- <t t-if="tickets.description">

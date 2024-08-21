@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_task_gantt" model="ir.ui.view">
+        <field name="name">project.task.gantt</field>
+        <field name="model">project.task</field>
+        <field eval="3" name="priority"/>
+        <field name="arch" type="xml">
+            <ganttview 
+                start_date="date_from" 
+                stop_date="date_to"
+                color="color"
+                task_progress="task_progress"                           
+            >
+            </ganttview>
+        </field>
+    </record>
+
+    <record id="view_task_form2_inherit_gantt" model="ir.ui.view">
+        <field name="name">project.task.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field eval="0" name="priority"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="task_progress"/>
+                <field name="color" widget="color_picker"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="project.action_view_all_task" model="ir.actions.act_window">
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity,ganttview</field>
+    </record>
+
+</odoo>

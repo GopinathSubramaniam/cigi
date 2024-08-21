@@ -9,102 +9,72 @@
                 <div class="row">
                     <div class="col">
                         <img
-                            src="/volunteers_donors_non_profit/static/description/campaign_banner.jpeg" />
+                            src="/volunteers_donors_non_profit/static/description/campaign_banner.jpeg"
+                            class="w-100" />
                     </div>
                 </div>
-                <!-- <div class="row align-items-center"
-                    style="padding: 5rem; align-content: center; color: white; 
-                    background: url('/volunteers_donors_non_profit/static/description/campaign_banner.jpeg'); height:
-                500px;">
-                    <div class="col-6 col-md-7 col-lg-7">
-                        <h1>Donate now to <br /> make an impact</h1>
-                        <h6>Make an impact by donating directly for a cause. We ensure that the
-                            money donated goes directly <br />towards reaching the goal of project</h6>
-                    </div>
-                    <div class="col-6 col-md-5 col-lg-5"
-                        style="border-left: 2px solid #fff; padding-left: 4rem;">
-                        <div class="row align-items-center mb-4">
-                            <div class="col-auto">
-                                <i class="fa fa-heartbeat fa-3x" aria-hidden="true"></i>
-                            </div>
-                            <div class="col-auto">
-                                <h3>9.5M+</h3>
-                                <small>Students Imapcted</small>
-                            </div>
-                        </div>
-                        <div class="row align-items-center mb-4">
-                            <div class="col-auto">
-                                <i class="fa fa-users fa-3x" aria-hidden="true"></i>
-                            </div>
-                            <div class="col-auto">
-                                <h3>2000+</h3>
-                                <small>Trained Resource Person</small>
-                            </div>
-                        </div>
-                        <div class="row align-items-center mb-4">
-                            <div class="col-auto">
-                                <i class="fa fa-tasks fa-3x" aria-hidden="true"></i>
-                            </div>
-                            <div class="col-auto">
-                                <h3>25+</h3>
-                                <small>Projects Completed</small>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
                 <!-- Campaigns list -->
                 <div class="container mt-4">
                     <div class="row">
-                        <t t-foreach="data" t-as="c">
-                            <div class="col-12 col-md-4 col-lg-3 mb-4">
-                                <a t-attf-href="/campaign/detail/{{c.id}}"
-                                    class="text-decoration-none">
-                                    <div class="card" style="height: 400px;">
-                                        <img class="card-img-top img-fluid"
-                                            t-att-src="image_data_uri(c.first_image)"
-                                            alt="Campaign Image" />
-                                        <div class="card-body">
-                                            <div class="row mb-2">
-                                                <div class="col">
-                                                    <h5>
-                                                        <t t-esc="c.title" />
-                                                    </h5>
-                                                    <div t-if="c.fund_need > 0">
-                                                        <small class="fw-bold">
-                                                            <span class="text-info"> Rs. <t
-                                                                    t-esc="c.fund_received" />
-                                                            </span>
-                                                            out of Rs.<t
-                                                                t-esc="c.fund_need" />
-                                                        </small>
-                                                        <div class="progress mb-1"
-                                                            style="height: 12px;">
-                                                            <div
-                                                                class="progress-bar progress-bar-striped fw-bolder"
-                                                                role="progressbar"
-                                                                t-attf-style="width: {{c.fund_received_percent}}%; font-size: 0.6rem;"
-                                                                aria-valuenow="25" aria-valuemin="0"
-                                                                aria-valuemax="100">
-                                                                <t
-                                                                    t-esc="c.fund_received_percent" />
-                                                                % </div>
+                        <div t-if="len(data) > 0">
+                            <t t-foreach="data" t-as="c">
+                                <div class="col-12 col-md-4 col-lg-3 mb-4">
+                                    <a t-attf-href="/campaign/detail/{{c.id}}"
+                                        class="text-decoration-none">
+                                        <div class="card" style="height: 400px;">
+                                            <img class="card-img-top img-fluid"
+                                                t-att-src="image_data_uri(c.first_image)"
+                                                alt="Campaign Image" />
+                                            <div class="card-body">
+                                                <div class="row mb-2">
+                                                    <div class="col">
+                                                        <h5>
+                                                            <t t-esc="c.title" />
+                                                        </h5>
+                                                        <div t-if="c.fund_need > 0">
+                                                            <small class="fw-bold">
+                                                                <span class="text-info"> Rs. <t
+                                                                        t-esc="c.fund_received" />
+                                                                </span>
+                                                                out of Rs.<t
+                                                                    t-esc="c.fund_need" />
+                                                            </small>
+                                                            <div class="progress mb-1"
+                                                                style="height: 12px;">
+                                                                <div
+                                                                    class="progress-bar progress-bar-striped fw-bolder"
+                                                                    role="progressbar"
+                                                                    t-attf-style="width: {{c.fund_received_percent}}%; font-size: 0.6rem;"
+                                                                    aria-valuenow="25"
+                                                                    aria-valuemin="0"
+                                                                    aria-valuemax="100">
+                                                                    <t
+                                                                        t-esc="c.fund_received_percent" />
+                                                                    % </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="card-footer bg-white border-0">
-                                            <div class="row">
-                                                <div class="col text-end">
-                                                    <button class="btn btn-info w-100">View Details</button>
+                                            <div class="card-footer bg-white border-0">
+                                                <div class="row">
+                                                    <div class="col text-end">
+                                                        <button class="btn btn-info w-100">View
+                                                            Details</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </t>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                        <div t-else="" class="text-center my-5">
+                            <i class="fa fa-calendar-o fa-5x text-primary"></i>
+                            <h3>No campaigns scheduled yet</h3>
+                            <p>We couldn't find any campaigns scheduled at this moment.</p>
+                        </div>
                     </div>
                 </div>
             </t>
