@@ -260,8 +260,6 @@ class FormioPublicController(http.Controller):
         try:
             etl_odoo_data = formio_builder.sudo()._etl_odoo_data(params=args.to_dict())
             submission_data.update(etl_odoo_data)
-
-
         except Exception as e:
             formio_exception = FormioException(e)
             error_message, error_traceback = formio_exception.render_exception_load()
@@ -326,18 +324,6 @@ class FormioPublicController(http.Controller):
                 'form_uuid': form.uuid,
                 'submission_data': form.submission_data
             }
-
-            print('>>>>>>>>>>>>>>>>>>>>')
-            
-            form_name =  post['data'].get('name')
-            form_email =  post['data'].get('email')
-            form_mobile =  post['data'].get('mobile')
-            form_city =  post['data'].get('city')
-
-            o = { 'name': form_name, 'complete_name': form_name, 'email': form_email, 'mobile': form_mobile, 
-                'city': form_city, 'active': True, 'is_donors': True, 'company_id': 1 }
-            
-            request.env["res.partner"].create(o)
         except Exception as e:
             formio_exception = FormioException(e, form=form)
             error_message, error_traceback = formio_exception.render_exception_submit()

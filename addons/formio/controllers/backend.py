@@ -87,7 +87,6 @@ class FormioController(http.Controller):
             return
 
         schema = json.dumps(post['schema'])
-        
         builder.write({'schema': schema})
 
     #######################
@@ -200,7 +199,6 @@ class FormioController(http.Controller):
                 form.after_save_draft()
             log_form_submisssion(form)
             res['submission_data'] = form.submission_data
-            
         except Exception as e:
             formio_exception = FormioException(e, form=form)
             error_message, error_traceback = formio_exception.render_exception_submit()
