@@ -1,9 +1,20 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+import base64
+import json
+import logging
+from datetime import date
+
+import requests
+from requests.auth import HTTPBasicAuth
+
 from odoo import Command, _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.addons.payment import utils as payment_utils
+from odoo.exceptions import UserError, ValidationError
+from odoo.http import request
 from odoo.osv import expression
 
+_logger = logging.getLogger(__name__)
 
 class PaymentMethod(models.Model):
     _name = 'payment.method'
@@ -263,3 +274,126 @@ class PaymentMethod(models.Model):
         generic_to_specific_mapping = mapping or {}
         specific_to_generic_mapping = {v: k for k, v in generic_to_specific_mapping.items()}
         return self.search([('code', '=', specific_to_generic_mapping.get(code, code))], limit=1)
+
+    # Customize
+    # <> HDFC APIs
+    # Session API
+    def _call_session_api(self, payload):
+        try:
+            headers = {"Content-Type": "application/json", "x-merchantid": payment_utils.MERCHANTID,  "x-customerid": payment_utils.CUSTOMERID}
+            response = requests.post(payment_utils.SESSION_URL, json=payload, headers=headers, auth=HTTPBasicAuth(payment_utils.HDFC_API_KEY, ""))
+        except Exception as e:
+            print(str(e))
+            _logger.exception("Unable to reach endpoint at %s", payment_utils.SESSION_URL)
+            raise ValidationError("Could not establish the connection to the API.")
+        
+        return response.json()
+
+    # Order status API
+    def _call_order_status_api(self, payload):
+        try:
+            print('_call_order_status_api')
+            headers = {"Content-Type": "application/json", "x-merchantid": payment_utils.MERCHANTID,  "x-customerid": payment_utils.CUSTOMERID}
+            response = requests.post(payment_utils.ORDER_STATUS_URL, json=payload, headers=headers, auth=HTTPBasicAuth(payment_utils.HDFC_API_KEY, ""))
+        except Exception as e:
+            print(str(e))
+            _logger.exception("Unable to reach endpoint at %s", payment_utils.ORDER_STATUS_URL)
+            raise ValidationError("Could not establish the connection to the API.")
+        
+        return response.json()
+    
+    # Get payment receipt
+    def get_payment_receipt(self, invoice_id):
+        print('>>>>>>get_payment_receipt>>>>>>>>')
+        invoice_obj = self.env['account.move']
+        payment_obj = self.env['account.payment']
+
+        # Fetch the invoice
+        invoice = invoice_obj.browse(invoice_id)
+        if not invoice:
+            raise ValueError("Invoice not found.")
+
+        # Find associated payments
+        print('Move Id = ', invoice.id)
+        payments = payment_obj.search([('move_id', 'in', [invoice.id])])
+
+        # Generate report (e.g., PDF) - Assuming the report action is linked in Odoo
+        if payments:
+            # This method triggers the standard payment receipt PDF generation
+            report_action = self.env['ir.actions.report']
+            pdf_content = report_action._get_report_from_name(
+                'account.report_payment_receipt'
+            ).render_qweb_pdf([payment.id for payment in payments])
+
+            return pdf_content[0]  # The PDF binary content
+        else:
+            raise ValueError("No payments found for this invoice.")   
+        # </>
+
+    def send_invoice_to_customer(self, invoice):
+        # self.env.ref('account.account_invoices').sudo()._render_qweb_pdf([invoice_id])
+        pdf_content, _ = self.env['ir.actions.report'].sudo()._render_qweb_pdf("account.account_invoices", invoice.id)
+        # pdf_content, _ = self.env.ref('account.account_invoices')._render_qweb_pdf([invoice.id])
+        pdf_base64 = base64.b64encode(pdf_content)
+        
+        attachment = self.env['ir.attachment'].sudo().create({
+            'name': 'Invoice.pdf',
+            'type': 'binary',
+            'datas': pdf_base64,
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'mimetype': 'application/pdf',
+            # 'res_model': 'account.move',
+        })
+        
+        print('Email = ', invoice.partner_id.email)
+        email_values = {
+                'subject': f'Invoice {invoice.name}',
+                'body_html': f'<p>Hello,</p><p>Please find attached your invoice {invoice.name}.</p>',
+                'email_to': invoice.partner_id.email,
+                'email_from': 'erp@cigi.org',
+                'email_cc': False,
+                'auto_delete': True,
+                'attachment_ids': [(4, attachment.id)] 
+            }
+        
+        mail = self.env['mail.mail'].sudo().create(email_values)
+        mail.send()
+        
+
+    # Create invoice after successfull payment
+    def _create_invoice_after_payment(self, order, order_line):
+         # Get selected users currency
+
+        invoice_lines = []
+        for line in order_line:
+            vals = {
+                'name': line.name,
+                'price_unit': line.price_unit,
+                'quantity': line.product_uom_qty,
+                'product_id': line.product_id.id,
+                'product_uom_id': line.product_uom.id,
+                'tax_ids': [(6, 0, line.tax_id.ids)],
+                'sale_line_ids': [(6, 0, [line.id])],
+            }
+            invoice_lines.append((0, 0, vals))
+        
+        print('Currency Id = ', order.currency_id.id)
+        invoice_obj = self.env['account.move'].create({
+            'ref': order.client_order_ref,
+            'move_type': 'out_invoice',
+            'invoice_origin': order.name,
+            'invoice_user_id': order.user_id.id,
+            'partner_id': order.partner_invoice_id.id,
+            'currency_id': order.currency_id.id,
+            'invoice_line_ids': invoice_lines
+        })
+
+        invoice_obj.sudo().action_post()
+        print("Invoice Created")
+        invoice_obj.sudo().action_register_payment()
+        print("Payment Registered")
+
+        self.send_invoice_to_customer(invoice_obj) # Sending invoice to customer
+        print("Mail Sent")
+        # </>

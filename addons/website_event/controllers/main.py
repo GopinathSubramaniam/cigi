@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
+import re
+from ast import literal_eval
 
 import babel.dates
-import re
 import werkzeug
-
-from ast import literal_eval
 from werkzeug.datastructures import OrderedMultiDict
 from werkzeug.exceptions import NotFound
+from werkzeug.utils import redirect
 
-from odoo import fields, http, _
+import odoo.addons.payment.utils as payment_utils
+from odoo import SUPERUSER_ID, _, fields, http
 from odoo.addons.website.controllers.main import QueryURL
+from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.osv import expression
-from odoo.tools.misc import get_lang
 from odoo.tools import lazy
-from odoo.exceptions import UserError
+from odoo.tools.misc import get_lang
+
+# from odoo.addons.payment.models.payment_method import _call_session_api
+
 
 class WebsiteEventController(http.Controller):
 
@@ -351,34 +355,160 @@ class WebsiteEventController(http.Controller):
 
         return request.env['event.registration'].sudo().create(registrations_to_create)
 
+    # Customized
     @http.route(['''/event/<model("event.event"):event>/registration/confirm'''], type='http', auth="public", methods=['POST'], website=True)
     def registration_confirm(self, event, **post):
-        """ Check before creating and finalize the creation of the registrations
-            that we have enough seats for all selected tickets.
-            If we don't, the user is instead redirected to page to register with a
-            formatted error message. """
+        
         registrations_data = self._process_attendees_form(event, post)
         event_ticket_ids = {registration['event_ticket_id'] for registration in registrations_data}
         event_tickets = request.env['event.event.ticket'].browse(event_ticket_ids)
+        
+        """ Check before creating and finalize the creation of the registrations
+        that we have enough seats for all selected tickets.
+        If we don't, the user is instead redirected to page to register with a
+        formatted error message. """
         if any(event_ticket.seats_limited and event_ticket.seats_available < len(registrations_data) for event_ticket in event_tickets):
             return request.redirect('/event/%s/register?registration_error_code=insufficient_seats' % event.id)
+        
         attendees_sudo = self._create_attendees_from_registration_post(event, registrations_data)
+        attendee = attendees_sudo[0] #.event_ticket_id
+        event_ticket = request.env['event.event.ticket'].browse(attendee.event_ticket_id.id)
+        
+        print('Price = ', event_ticket.price)
+        print('Condition = ', (event_ticket.price is not None and event_ticket.price > 0))
+        
+        if event_ticket.price is not None and event_ticket.price > 0:
+            contact_id = None
+            # <> Create contact entry for attendees
+            for atte in attendees_sudo:
+                contact = {
+                    "name": atte['name'],
+                    "complete_name": atte['name'],
+                    "email": atte['email'],
+                    "mobile": atte['phone'],
+                    "city": '',
+                    "active": True,
+                    'company_id': 1 # Default company id
+                }
+                contact = request.env["res.partner"].sudo().create(contact)  # Create contact data in res.partner model
+                contact_id = contact.id
+            # </>
 
-        return request.redirect(('/event/%s/registration/success?' % event.id) + werkzeug.urls.url_encode({'registration_ids': ",".join([str(id) for id in attendees_sudo.ids])}))
+            # AT<Attendee Id>EV<Event Id>TI<Event Ticket Id>
+            order_id = ('AT%sEV%sTI%s' % (attendee.id, attendee.event_id.id, attendee.event_ticket_id.id))
+            atten_ids = "-".join([str(id) for id in attendees_sudo.ids])
 
+            # request.session[payment_utils.EVENT_PRICE] = event_ticket.price
+            # <> Initiate the payment
+            visitor = request.env['website.visitor']._get_visitor_from_request()
+           
+            return_id = ('/%s_%s_%s_%s_%s' % (order_id, atten_ids, attendee.event_id.id, contact_id, visitor.id))
+            callback_url = payment_utils.PAYMENT_CALLBACK_URL+return_id
+            print('Callback URL = ',callback_url)
+            payload = {
+                    'order_id': order_id,
+                    'amount': event_ticket.price,
+                    'customer_id': ('CUST_%s_%s' % (attendee.id, order_id)),
+                    'customer_email': attendee.email,
+                    'customer_phone': attendee.phone,
+                    'payment_page_client_id': 'hdfcmaster',
+                    'action': "paymentPage",
+                    'currency': "INR",
+                    'return_url': callback_url,
+                    'description': 'Event Registration',
+                    'first_name': attendee.name,
+                    'last_name': ''
+                }
+            jsonres = request.env['payment.method']._call_session_api(payload)
+            payment_link = jsonres['payment_links']['web']
+            print(payment_link)
+            return redirect(payment_link)
+            # </>
+        else: 
+            registration_ids = ",".join([str(id) for id in attendees_sudo.ids])
+            # return request.render('website_event.website_event_order_success', jsonres)
+            return request.redirect(('/event/%s/registration/success?' % event.id) + werkzeug.urls.url_encode({'registration_ids': registration_ids}))
+        
+    # Customized
+    @http.route(['/event/order/success/<string:session_val>'], type="http", auth="public", website=True, sitemap=False, csrf=False)
+    def event_order_success(self, session_val): 
+        print('Session Value = ', session_val)
+        session_vals = session_val.split('_')
+
+        order_id = session_vals[0]
+        attendees_ids = session_vals[1]
+        att_ids = [attendees_id for attendees_id in attendees_ids.split('-')]
+        event_id = int(session_vals[2])
+        contact_id = int(session_vals[3])
+        visitor_id = int(session_vals[4])
+        
+        if not visitor_id:
+            raise NotFound()
+        
+        # <> Creating SO & Lines when submitting for payment
+        event_ticket = request.env['event.event.ticket'].search([('event_id', '=', event_id)], limit=1) # Get event ticket
+        
+        order_data = {
+            'name': 'Test Sale Order',
+            'partner_id': contact_id,
+            'partner_invoice_id': contact_id,
+            'partner_shipping_id': contact_id,
+            'order_line': [
+                (0, 0,{
+                    'event_id': event_id,
+                    'event_ticket_id': event_ticket.id,
+                    'product_id': event_ticket.product_id.id,
+                    'name': event_ticket.name, #event_ticket.product_id.product_tmpl_id.name['en_US']
+                    'product_uom' : event_ticket.product_id.product_tmpl_id.uom_id.id,
+                    'product_uom_qty' : len(att_ids)
+                })
+            ]
+        }
+        # so = request.env['sale.order'].sudo().create(order_data)
+        so = request.env['sale.order'].with_user(SUPERUSER_ID).create(order_data)
+
+        # <> Update event registrations with sale_order_id and sale_order_line_id
+        order_line = request.env['sale.order.line'].search([('order_id', '=', so.id)], limit=1)
+        request.env['event.registration'].search([('id', 'in', att_ids)]).update({'sale_order_id': so.id, 'sale_status': 'sold', 'sale_order_line_id': order_line.id})
+        so.action_confirm() # Confirm SO
+        
+        payload = {'order_id': order_id}
+        jsonres = request.env['payment.method']._call_order_status_api(payload)
+        print('Status = ', jsonres['status'])
+
+        # Create invoice if the payment status is CHARGED
+        if(jsonres['status'] == 'CHARGED'):
+            request.env['payment.method']._create_invoice_after_payment(so, so.order_line)
+            print('Invoice Created')
+
+        # print(jsonres)
+        # attids = ",".join([str(id) for id in att_ids])
+        
+        event = request.env['event.event'].browse(event_id)
+        attendees_sudo = request.env['event.registration'].sudo().search([
+            ('id', 'in', att_ids),
+            ('event_id', '=', event.id),
+            ('visitor_id', '=', visitor_id),
+        ])
+        print('--------------------------------')
+        print(event)
+        return request.render("website_event.registration_complete", self._get_registration_confirm_values(event, attendees_sudo))
+        # return request.redirect(('/event/%s/registration/success?' % event_id) + werkzeug.urls.url_encode({'registration_ids': attids}))
+    
     @http.route(['/event/<model("event.event"):event>/registration/success'], type='http', auth="public", methods=['GET'], website=True, sitemap=False)
     def event_registration_success(self, event, registration_ids):
         # fetch the related registrations, make sure they belong to the correct visitor / event pair
         visitor = request.env['website.visitor']._get_visitor_from_request()
         if not visitor:
             raise NotFound()
+        
+        ids = [str(registration_id) for registration_id in registration_ids.split(',')]
         attendees_sudo = request.env['event.registration'].sudo().search([
-            ('id', 'in', [str(registration_id) for registration_id in registration_ids.split(',')]),
+            ('id', 'in', ids),
             ('event_id', '=', event.id),
             ('visitor_id', '=', visitor.id),
         ])
-        return request.render("website_event.registration_complete",
-            self._get_registration_confirm_values(event, attendees_sudo))
+        return request.render("website_event.registration_complete", self._get_registration_confirm_values(event, attendees_sudo))
 
     def _get_registration_confirm_values(self, event, attendees_sudo):
         urls = event._get_event_resource_urls()

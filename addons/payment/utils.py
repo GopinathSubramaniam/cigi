@@ -7,9 +7,21 @@ from odoo.http import request
 from odoo.tools import consteq, float_round, ustr
 from odoo.tools.misc import hmac as hmac_tool
 
+# Customized
+MERCHANTID = "SG892"
+CUSTOMERID = "hdfcmaster"
+SESSION_URL = 'https://smartgatewayuat.hdfcbank.com/session'
+ORDER_STATUS_URL = 'https://smartgatewayuat.hdfcbank.com/orders'
+PAYMENT_CALLBACK_URL = 'http://localhost:8069/event/order/success'
+# PAYMENT_CALLBACK_URL = 'https://testerp.cigi.org/event/order/success'
+HDFC_API_KEY = '104DEE413DD4012A1E35DF222AC7F6'
+PAY_ORD_ID = 'PAY_ORD_ID'
+EVENT_ID = 'EVENT_ID'
+ATTENDEE_IDS = 'ATTENDEE_IDS'
+EVENT_PRICE = 'EVENT_PRICE'
+CONTACT_ID = 'CONTACT_ID'
 
 # Access token management
-
 def generate_access_token(*values):
     """ Generate an access token based on the provided values.
 

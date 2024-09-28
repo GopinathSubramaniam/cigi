@@ -286,6 +286,40 @@
         </div>
     </template>
 
+    <!-- <> # Customize Event order success -->
+    <template id="website_event_order_success">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col text-center mb-4">
+                        <h2>Registered Successfully. Your Payment Order #: <t t-esc="order_id" /></h2>
+                        <h6>Please check your email for the event registration receipt.</h6>
+                        <img class="w-25"
+                            src="/volunteers_donors_non_profit/static/description/payment-success.gif" />
+                        <div>
+                            <a href="/event" class="btn btn-primary">
+                                <i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Events </a>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div t-if="attendees" class="row mb-3">
+                            <div class="col-12 mb-2">
+                                <a class="btn btn-primary" title="Download All Tickets"
+                                    target="_blank"
+                                    t-attf-href="/event/{{ event.id }}/my_tickets?registration_ids={{ attendees.ids }}&amp;tickets_hash={{ event._get_tickets_access_hash(attendees.ids) }}">
+                                    Download Tickets <i class="ms-1 fa fa-download" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </t>
+    </template>
+    <!-- </> -->
+
     <template id="registration_event_question" name="Registration Event Question">
         <label t-out="question.title" />
         <span t-if="question.is_mandatory_answer">*</span>
@@ -533,7 +567,8 @@
                                             <!-- <span t-else="">Registration</span> --> Choose
                                             the No of Participants </h5>
                                         <ul>
-                                            <!-- <li>For partial payment, please contact # 80866 64006</li> -->
+                                            <!-- <li>For partial payment, please contact # 80866
+                                            64006</li> -->
                                             <li>Payments are not refundable</li>
                                         </ul>
                                         <!-- <t t-if="tickets.description">
