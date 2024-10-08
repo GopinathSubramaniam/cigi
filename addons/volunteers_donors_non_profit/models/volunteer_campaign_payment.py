@@ -36,9 +36,9 @@ class VolunteerCampaignPayment(models.Model):
     user_mobile = fields.Char(string='Mobile', related='partner_id.mobile')
     # acc_payment_name = fields.Char(string='Payment Name', related='acc_move_id.name')
 
-    acc_payment_number = fields.Char(compute='get_acc_payment_number', string='Payment Number', store=False)
+    invoice_num = fields.Char(compute='get_invoice_num', string='Payment Number', store=False)
 
-    def get_acc_payment_number(self):
+    def get_invoice_num(self):
         for rec in self:
-            data = rec.env['account.move'].sudo().search(['&', ('payment_id','=', rec.acc_move_id.payment_id.id), ('state','=', 'posted')])
-            rec.acc_payment_number = data.name
+            print('Payment Id = ', rec.acc_move_id.name)
+            rec.invoice_num = rec.acc_move_id.name

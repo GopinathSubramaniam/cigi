@@ -7,6 +7,7 @@ from datetime import date
 
 import requests
 from requests.auth import HTTPBasicAuth
+from werkzeug.utils import redirect
 
 from odoo import Command, _, api, fields, models
 from odoo.addons.payment import utils as payment_utils
@@ -330,6 +331,7 @@ class PaymentMethod(models.Model):
             raise ValueError("No payments found for this invoice.")   
         # </>
 
+    # Send invoice after payment
     def send_invoice_to_customer(self, invoice):
         # self.env.ref('account.account_invoices').sudo()._render_qweb_pdf([invoice_id])
         pdf_content, _ = self.env['ir.actions.report'].sudo()._render_qweb_pdf("account.account_invoices", invoice.id)
@@ -391,9 +393,43 @@ class PaymentMethod(models.Model):
 
         invoice_obj.sudo().action_post()
         print("Invoice Created")
-        invoice_obj.sudo().action_register_payment()
+        
+        # <> Register invoice payment
+        journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
+        payment_register_vals = {
+            'partner_id': invoice_obj.partner_id.id,
+            'amount': invoice_obj.amount_total,
+            'journal_id': invoice_obj.journal_id.id,  # The journal where the payment is registered (e.g., bank)
+            'payment_method_line_id': journal.inbound_payment_method_line_ids[0].id, # payment_id.id,  # The payment method (manual, bank)
+            'company_id': invoice_obj.company_id.id,  # Link payment to the invoice
+        }
+        payment_register = self.env['account.payment.register'].with_context(active_model='account.move', active_ids=[invoice_obj.id]).sudo().create(payment_register_vals)
+        payment_register.action_create_payments()
         print("Payment Registered")
+        # </>
 
         self.send_invoice_to_customer(invoice_obj) # Sending invoice to customer
         print("Mail Sent")
         # </>
+
+    # Redirect to HDFC payment page
+    def _redirect_to_payment_page(self, order_id, name, amount, email, phone, desc, callback_url):
+        payload = {
+                'order_id': order_id,
+                'amount': amount,
+                'customer_id': order_id,
+                'customer_email': email,
+                'customer_phone': phone,
+                'payment_page_client_id': 'hdfcmaster',
+                'action': "paymentPage",
+                'currency': "INR",
+                'return_url': callback_url,
+                'description': desc,
+                'first_name': name,
+                'last_name': ''
+            }
+        jsonres = self._call_session_api(payload)
+        payment_link = jsonres['payment_links']['web']
+
+        print('Payment Link = '+payment_link)
+        return payment_link

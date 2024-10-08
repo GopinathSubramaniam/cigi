@@ -374,9 +374,6 @@ class WebsiteEventController(http.Controller):
         attendee = attendees_sudo[0] #.event_ticket_id
         event_ticket = request.env['event.event.ticket'].browse(attendee.event_ticket_id.id)
         
-        print('Price = ', event_ticket.price)
-        print('Condition = ', (event_ticket.price is not None and event_ticket.price > 0))
-        
         if event_ticket.price is not None and event_ticket.price > 0:
             contact_id = None
             # <> Create contact entry for attendees
@@ -436,63 +433,68 @@ class WebsiteEventController(http.Controller):
         session_vals = session_val.split('_')
 
         order_id = session_vals[0]
-        attendees_ids = session_vals[1]
-        att_ids = [attendees_id for attendees_id in attendees_ids.split('-')]
-        event_id = int(session_vals[2])
-        contact_id = int(session_vals[3])
-        visitor_id = int(session_vals[4])
+        existing_invoices = request.env['account.move'].search([('ref', '=', order_id)])
         
-        if not visitor_id:
-            raise NotFound()
-        
-        # <> Creating SO & Lines when submitting for payment
-        event_ticket = request.env['event.event.ticket'].search([('event_id', '=', event_id)], limit=1) # Get event ticket
-        
-        order_data = {
-            'name': 'Test Sale Order',
-            'partner_id': contact_id,
-            'partner_invoice_id': contact_id,
-            'partner_shipping_id': contact_id,
-            'order_line': [
-                (0, 0,{
-                    'event_id': event_id,
-                    'event_ticket_id': event_ticket.id,
-                    'product_id': event_ticket.product_id.id,
-                    'name': event_ticket.name, #event_ticket.product_id.product_tmpl_id.name['en_US']
-                    'product_uom' : event_ticket.product_id.product_tmpl_id.uom_id.id,
-                    'product_uom_qty' : len(att_ids)
-                })
-            ]
-        }
-        # so = request.env['sale.order'].sudo().create(order_data)
-        so = request.env['sale.order'].with_user(SUPERUSER_ID).create(order_data)
+        # Create invoice only if the invoice is not created already
+        if len(existing_invoices) == 0:
+            attendees_ids = session_vals[1]
+            att_ids = [attendees_id for attendees_id in attendees_ids.split('-')]
+            event_id = int(session_vals[2])
+            contact_id = int(session_vals[3])
+            visitor_id = int(session_vals[4])
 
-        # <> Update event registrations with sale_order_id and sale_order_line_id
-        order_line = request.env['sale.order.line'].search([('order_id', '=', so.id)], limit=1)
-        request.env['event.registration'].search([('id', 'in', att_ids)]).update({'sale_order_id': so.id, 'sale_status': 'sold', 'sale_order_line_id': order_line.id})
-        so.action_confirm() # Confirm SO
-        
-        payload = {'order_id': order_id}
-        jsonres = request.env['payment.method']._call_order_status_api(payload)
-        print('Status = ', jsonres['status'])
+            payload = {'order_id': order_id}
+            jsonres = request.env['payment.method']._call_order_status_api(payload)
+            print('Status = ', jsonres)
+            
+            # Create the invoice only if the payment status is 'CHARGED'
+            if(jsonres['status'] == 'CHARGED'):
+                event = request.env['event.event'].browse(event_id)
+                attendees_sudo = request.env['event.registration'].sudo().search([
+                    ('id', 'in', att_ids),
+                    ('event_id', '=', event.id),
+                    ('visitor_id', '=', visitor_id),
+                ])
 
-        # Create invoice if the payment status is CHARGED
-        if(jsonres['status'] == 'CHARGED'):
-            request.env['payment.method']._create_invoice_after_payment(so, so.order_line)
-            print('Invoice Created')
+                # <> Creating SO & Lines when submitting for payment
+                event_ticket = request.env['event.event.ticket'].search([('event_id', '=', event_id)], limit=1) # Get event ticket
+                
+                order_data = {
+                    'name': order_id,
+                    'partner_id': contact_id,
+                    'partner_invoice_id': contact_id,
+                    'partner_shipping_id': contact_id,
+                    'order_line': [
+                        (0, 0,{
+                            'event_id': event_id,
+                            'event_ticket_id': event_ticket.id,
+                            'product_id': event_ticket.product_id.id,
+                            'name': event_ticket.name, #event_ticket.product_id.product_tmpl_id.name['en_US']
+                            'product_uom' : event_ticket.product_id.product_tmpl_id.uom_id.id,
+                            'product_uom_qty' : len(att_ids),
+                            'tax_id': [(6, 0, [])],
+                        })
+                    ]
+                }
+                
+                so = request.env['sale.order'].with_user(SUPERUSER_ID).create(order_data)
+                
+                # <> Update event registrations with sale_order_id and sale_order_line_id
+                order_line = request.env['sale.order.line'].search([('order_id', '=', so.id)], limit=1)
+                request.env['event.registration'].search([('id', 'in', att_ids)]).update({'sale_order_id': so.id, 'sale_status': 'sold', 'sale_order_line_id': order_line.id})
+                so.action_confirm() # Confirm SO
 
-        # print(jsonres)
-        # attids = ",".join([str(id) for id in att_ids])
+                request.env['payment.method']._create_invoice_after_payment(so, so.order_line) # Create invoice
+            else:
+                print('Payment Canceled/Failed')
+                request.env['event.registration'].search([('id', 'in', att_ids)]).update({'sale_status': 'to_pay'})
+                # raise UserError(_("Payment Failed: We received your details. Please contact administrator for the payment related queries/details."))
+                return request.render("website_event.payment_failed")
         
-        event = request.env['event.event'].browse(event_id)
-        attendees_sudo = request.env['event.registration'].sudo().search([
-            ('id', 'in', att_ids),
-            ('event_id', '=', event.id),
-            ('visitor_id', '=', visitor_id),
-        ])
-        print('--------------------------------')
-        print(event)
-        return request.render("website_event.registration_complete", self._get_registration_confirm_values(event, attendees_sudo))
+        else: # Show the already created invoice number
+            return request.render("website_event.order_alread_created", {'order_id': order_id})
+        
+        return request.render("website_event.registration_complete", self._get_registration_confirm_values(event, attendees_sudo, order_id))
         # return request.redirect(('/event/%s/registration/success?' % event_id) + werkzeug.urls.url_encode({'registration_ids': attids}))
     
     @http.route(['/event/<model("event.event"):event>/registration/success'], type='http', auth="public", methods=['GET'], website=True, sitemap=False)
@@ -518,6 +520,19 @@ class WebsiteEventController(http.Controller):
             'google_url': urls.get('google_url'),
             'iCal_url': urls.get('iCal_url')
         }
+    
+    def _get_registration_confirm_values(self, event, attendees_sudo, order_id):
+        print(attendees_sudo[0].event_ticket_id.price)
+        urls = event._get_event_resource_urls()
+        return {
+            'attendees': attendees_sudo,
+            'event': event,
+            'google_url': urls.get('google_url'),
+            'iCal_url': urls.get('iCal_url'),
+            'order_id': order_id,
+            'price': attendees_sudo[0].event_ticket_id.price
+        }
+    
 
     # ------------------------------------------------------------
     # TOOLS (HELPERS)

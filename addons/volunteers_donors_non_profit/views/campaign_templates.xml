@@ -241,7 +241,8 @@
                                                                 <select type="select"
                                                                     class="form-control form-control-sm border-0 border-bottom"
                                                                     placeholder="Type of ID">
-                                                                    <option value="+91">+91</option>
+                                                                    <option value="+91">IN +91</option>
+                                                                    <option value="+91">QA +974</option>
                                                                 </select>
                                                             </div>
                                                             <div class="col ps-2">
@@ -261,7 +262,7 @@
                                                     <div class="mb-3">
                                                         <div class="row">
                                                             <div class="col-4 pe-2">
-                                                                <select type="select"
+                                                                <select type="select" t-attf-name="id_number"
                                                                     class="form-control form-control-sm border-0 border-bottom"
                                                                     placeholder="Type of ID">
                                                                     <option value="PAN">PAN</option>

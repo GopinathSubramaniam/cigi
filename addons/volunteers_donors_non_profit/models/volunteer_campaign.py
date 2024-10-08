@@ -5,8 +5,8 @@ class Campaign(models.Model):
     _description = "Campaign"
 
 
-    project_name = fields.Char(
-        string = "Project Name",
+    campaign_name = fields.Char(
+        string = "Campaign Name",
     )
 
     campaign_type = fields.Selection([
@@ -35,14 +35,6 @@ class Campaign(models.Model):
         default=0.00,
         required = True
     )
-
-    # fund_received = fields.Float(
-    #     string="Fund Received",
-    #     digits=(12,2),
-    #     default = 0.00,
-    #     store = False,
-    #     compute = "fund_received"
-    # )
 
     fund_received = fields.Float(
         string="Fund Received", 

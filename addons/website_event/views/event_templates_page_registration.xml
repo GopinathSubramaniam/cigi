@@ -347,18 +347,29 @@
 
     <template id="registration_complete" name="Registration Completed">
         <t t-call="website_event.layout">
-            <div class="container my-5 o_wereg_confirmed">
+            <div class="container o_wereg_confirmed">
                 <div class="row mb-3">
                     <div class="col-12">
-                        <h3>Registration confirmed!</h3>
-                        <u>
+                        <div>
+                            <div class="fs-3 mb-2">
+                                <i class="fa fa-check-circle text-success" />
+                                <span>Registration
+                                    Successfully Completed !!.</span>
+                            </div>
+                        </div>
+                        <!-- <u>
                             <a class="h4 text-primary" t-out="event.name"
                                 t-att-href="event.website_url" />
-                        </u>
+                        </u> -->
+                        <h5>
+                            <span>Your Reference Number: <t t-out="order_id" /></span>. <span>Invoice
+                            for <i class="fa fa-rupee" /><t t-out="price" /> will be sent to your
+                            email.</span>
+                        </h5>
                     </div>
                 </div>
-                <div t-if="attendees" class="row mb-3">
-                    <div class="col-12 mb-2">
+                <div t-if="attendees" class="row">
+                    <div class="col-12">
                         <a class="btn btn-primary" title="Download All Tickets" target="_blank"
                             t-attf-href="/event/{{ event.id }}/my_tickets?registration_ids={{ attendees.ids }}&amp;tickets_hash={{ event._get_tickets_access_hash(attendees.ids) }}">
                             Download Tickets <i class="ms-1 fa fa-download" />
@@ -438,6 +449,42 @@
             <input t-if='website.plausible_shared_key' type='hidden' class='js_plausible_push'
                 data-event-name='Lead Generation'
                 t-attf-data-event-params='{"CTA": "Event Registration"}' />
+        </t>
+    </template>
+    <!-- Payment failed template -->
+    <template id="payment_failed" name="Payment Failed">
+        <t t-call="website.layout">
+            <div class="container o_wereg_confirmed">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="fs-3 my-5 py-5 text-center">
+                            <h4 class="mb-4"><i class="fa fa-times-circle text-danger"></i> Payment
+                                Canceled/ Failed</h4>
+                            <h6>We received your details. Please contact administrator for
+                                the payment related queries/details. </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <!-- Order already created template -->
+    <template id="order_alread_created" name="Invoice Already Created">
+        <t t-call="website.layout">
+            <div class="container o_wereg_confirmed">
+                <div class="row mt-5 pt-5">
+                    <div class="col-12">
+                        <div class="fs-3 my-5 py-5 text-center">
+                            <h4 class="mb-4"><i class="fa fa-times-circle text-danger"></i> Invoice
+                                already created</h4>
+                            <h6>Your Ref Number : <t t-esc="order_id" />. Please contact
+                                administrator for more information</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </t>
     </template>
 

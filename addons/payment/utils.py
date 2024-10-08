@@ -21,6 +21,12 @@ ATTENDEE_IDS = 'ATTENDEE_IDS'
 EVENT_PRICE = 'EVENT_PRICE'
 CONTACT_ID = 'CONTACT_ID'
 
+def get_base_url():
+    return request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+def get_payment_donation_callback():
+    return get_base_url()+'/campaign/payment/success/'
+
 # Access token management
 def generate_access_token(*values):
     """ Generate an access token based on the provided values.
