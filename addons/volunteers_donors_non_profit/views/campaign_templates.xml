@@ -17,7 +17,7 @@
                 <!-- Campaigns list -->
                 <div class="container mt-4">
                     <div class="row">
-                        <div t-if="len(data) > 0">
+                        <t t-if="len(data) > 0">
                             <t t-foreach="data" t-as="c">
                                 <div class="col-12 col-md-4 col-lg-3 mb-4">
                                     <a t-attf-href="/campaign/detail/{{c.id}}"
@@ -69,7 +69,7 @@
                                     </a>
                                 </div>
                             </t>
-                        </div>
+                        </t>
                         <div t-else="" class="text-center my-5">
                             <i class="fa fa-calendar-o fa-5x text-primary"></i>
                             <h3>No campaigns scheduled yet</h3>
@@ -262,7 +262,8 @@
                                                     <div class="mb-3">
                                                         <div class="row">
                                                             <div class="col-4 pe-2">
-                                                                <select type="select" t-attf-name="id_number"
+                                                                <select type="select"
+                                                                    t-attf-name="id_number"
                                                                     class="form-control form-control-sm border-0 border-bottom"
                                                                     placeholder="Type of ID">
                                                                     <option value="PAN">PAN</option>
@@ -328,20 +329,20 @@
         <t t-name="website.campaigns">
             <t t-call="website.layout">
                 <div class="container">
-                    <div class="row mt-4">
-                        <div class="col text-center mb-4">
-                            <h2>Thank you for your incredibly generous donation to CIGI!</h2>
-                            <h6>
-                                <i>Your support is vital in shaping the future of the next
-                                    generation.
-                                    Your contribution will help us continue our mission. With your
-                                    help,
-                                    we can make a real difference. Expect a receipt in your email
-                                    inbox
-                                    soon. Once again, thank you for your kindness and dedication to
-                                    our
-                                    cause.</i>
-                            </h6>
+                    <div class="row mt-5">
+                        <div class="col justify-content-center text-center mb-4">
+                            <h4>Thank you for your incredibly generous donation to CIGI!</h4>
+                            <small style="text-align: justify;">
+                                Your support is vital in shaping the future of the next
+                                generation.
+                                Your contribution will help us continue our mission. With your
+                                help,
+                                we can make a real difference. Expect a receipt in your email
+                                inbox
+                                soon. Once again, thank you for your kindness and dedication to
+                                our
+                                cause.
+                            </small>
                             <img class="w-25"
                                 src="/volunteers_donors_non_profit/static/description/payment-success.gif" />
                             <div>

@@ -361,9 +361,10 @@ class PaymentMethod(models.Model):
         
         mail = self.env['mail.mail'].sudo().create(email_values)
         mail.send()
+        print("Mail Sent")
         
 
-    # Create invoice after successfull payment
+    # Create invoice from sales order after successfull payment
     def _create_invoice_after_payment(self, order, order_line):
          # Get selected users currency
 
@@ -394,6 +395,65 @@ class PaymentMethod(models.Model):
         invoice_obj.sudo().action_post()
         print("Invoice Created")
         
+        self._register_payment(invoice_obj) # Register invoice payment
+        self.send_invoice_to_customer(invoice_obj) # Send invoice to customer mail
+        # </>
+
+    # Create invoice without SO
+    def _create_invoice_without_so(self, ref_val, contact_id, invoice_date, amount):
+        invoice_vals = {
+                'invoice_origin': ref_val,
+                'move_type': 'out_invoice',  # Type: 'out_invoice' for customer invoice, 'in_invoice' for vendor bill
+                'partner_id': contact_id,  # ID of the customer (res.partner)
+                'invoice_date': invoice_date,  # Invoice date
+                'invoice_line_ids': [
+                    (0, 0, {
+                        'product_id': 1,  # ID of the product (product.product)
+                        'name': 'Donation',  # Description of the product/service
+                        'quantity': 1,  # Quantity of items
+                        'price_unit': amount,  # Price per unit
+                        'account_id': 1,  # Account where this product is recorded (account.account)
+                        'tax_ids': [(6, 0, [])],
+                    }),
+                ],
+                'journal_id': 1,  # Journal where the invoice is recorded (account.journal)
+            }
+        created_acc_move = self.env['account.move'].create(invoice_vals)
+        created_acc_move.sudo().action_post()
+        print("Invoice Created")
+        
+        self._register_payment(created_acc_move) # Register invoice payment
+        self.send_invoice_to_customer(created_acc_move) # SendingSend invoice to customer mail
+
+        return created_acc_move
+    
+    # Create payments in accounts module and send receipt to customer mail
+    def _create_payment_in_account(self, ref_val, contact_id, payment_date, amount):
+        journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
+        acc_payment_method = self.env['account.payment.method'].search([('code', '=', 'manual'), ('payment_type', '=', 'inbound')], limit=1)
+
+        payment_vals = {
+            'partner_id': contact_id,  # Customer/Vendor ID
+            'amount': amount,  # Payment amount
+            'payment_type': 'inbound',  # 'inbound' for customer payments, 'outbound' for vendor payments
+            'payment_method_id': acc_payment_method.id,  # Payment method (like manual, bank, etc.)
+            'journal_id': journal.id,  # The journal for the payment (e.g., bank journal)
+            'currency_id': journal.company_id.currency_id.id,  # Currency in which payment is made
+            'partner_type': 'customer',  # 'customer' or 'supplier'
+            'ref': ref_val,  # A reference note or description
+            'date': payment_date,  # The payment date
+        }
+        payment = self.env['account.payment'].create(payment_vals)
+        payment.sudo().action_post()
+        print("Payment Posted")
+
+        email_template = self.env['mail.template'].search([('model', '=', 'account.payment')], limit=1)
+        email_template.sudo().send_mail(payment.id, force_send=True)
+        print("Payment Attachment Mail Sent")
+        
+        return payment
+
+    def _register_payment(self, invoice_obj):
         # <> Register invoice payment
         journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
         payment_register_vals = {
@@ -406,10 +466,6 @@ class PaymentMethod(models.Model):
         payment_register = self.env['account.payment.register'].with_context(active_model='account.move', active_ids=[invoice_obj.id]).sudo().create(payment_register_vals)
         payment_register.action_create_payments()
         print("Payment Registered")
-        # </>
-
-        self.send_invoice_to_customer(invoice_obj) # Sending invoice to customer
-        print("Mail Sent")
         # </>
 
     # Redirect to HDFC payment page

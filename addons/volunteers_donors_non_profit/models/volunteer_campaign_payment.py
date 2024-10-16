@@ -22,23 +22,21 @@ class VolunteerCampaignPayment(models.Model):
         default = 0.00,
     )
 
-    acc_move_id = fields.Many2one(
-        'account.move',
-        string="Account Payment",
+    cust_payment_id = fields.Many2one(
+        'account.payment',
+        string="Payment",
         index=True,
         readonly=True,
         auto_join=True,
         ondelete="cascade",
         required=True,
     )
-    
+
     user_email = fields.Char(string='Email', related='partner_id.email')
     user_mobile = fields.Char(string='Mobile', related='partner_id.mobile')
-    # acc_payment_name = fields.Char(string='Payment Name', related='acc_move_id.name')
 
     invoice_num = fields.Char(compute='get_invoice_num', string='Payment Number', store=False)
 
     def get_invoice_num(self):
         for rec in self:
-            print('Payment Id = ', rec.acc_move_id.name)
-            rec.invoice_num = rec.acc_move_id.name
+            rec.invoice_num = rec.cust_payment_id.move_id.name

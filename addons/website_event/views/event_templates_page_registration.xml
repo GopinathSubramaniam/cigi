@@ -451,6 +451,7 @@
                 t-attf-data-event-params='{"CTA": "Event Registration"}' />
         </t>
     </template>
+
     <!-- Payment failed template -->
     <template id="payment_failed" name="Payment Failed">
         <t t-call="website.layout">
@@ -631,12 +632,14 @@
                                             (<span t-out="tickets.event_id.date_tz" />) </small>
                                     </div>
                                     <div
-                                        class="col-md-4 d-flex align-items-center justify-content-between p-0">
+                                        class="col-md-4 d-flex align-items-center justify-content-end">
                                         <t t-if="event.event_registrations_open">
+                                            <small class="badge text-bg-secondary"> INR <t
+                                                    t-out="event.event_ticket_ids.price" /> / Ticket </small>
                                             <link itemprop="availability"
                                                 content="http://schema.org/InStock" />
                                             <div
-                                                class="o_wevent_registration_single_select w-auto ms-auto">
+                                                class="o_wevent_registration_single_select w-auto ms-2">
                                                 <select
                                                     t-att-name="'nb_register-%s' % (tickets.id if tickets else 0)"
                                                     class="d-inline w-auto form-select">

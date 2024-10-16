@@ -383,6 +383,7 @@
                                             class="o_wevent_event_day oe_hide_on_date_edit" />
                                     </div>
                                     <!-- Not open -->
+
                                     <span
                                         t-if="not event.event_registrations_open and (not opt_events_list_cards or not opt_events_list_columns)"
                                         class="position-absolute bottom-0 px-3 py-2 w-100 text-bg-light">
@@ -427,6 +428,9 @@
                                     t-attf-class="card-title mt-2 mb-0 text-truncate #{(not event.website_published) and 'text-danger'}">
                                     <span t-field="event.name" itemprop="name" />
                                 </h5>
+                                <small class="badge text-bg-secondary"> INR <t
+                                        t-out="event.event_ticket_ids.price" />
+                                </small>
                                 <!-- Start Date & Time -->
                                 <small class="o_not_editable text-muted" itemprop="description"
                                     t-out="event.subtitle">
