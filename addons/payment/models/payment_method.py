@@ -305,7 +305,6 @@ class PaymentMethod(models.Model):
     
     # Get payment receipt
     def get_payment_receipt(self, invoice_id):
-        print('>>>>>>get_payment_receipt>>>>>>>>')
         invoice_obj = self.env['account.move']
         payment_obj = self.env['account.payment']
 
@@ -315,7 +314,6 @@ class PaymentMethod(models.Model):
             raise ValueError("Invoice not found.")
 
         # Find associated payments
-        print('Move Id = ', invoice.id)
         payments = payment_obj.search([('move_id', 'in', [invoice.id])])
 
         # Generate report (e.g., PDF) - Assuming the report action is linked in Odoo
@@ -428,30 +426,55 @@ class PaymentMethod(models.Model):
         return created_acc_move
     
     # Create payments in accounts module and send receipt to customer mail
-    def _create_payment_in_account(self, ref_val, contact_id, payment_date, amount):
-        journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
-        acc_payment_method = self.env['account.payment.method'].search([('code', '=', 'manual'), ('payment_type', '=', 'inbound')], limit=1)
+    # def _create_payment_in_account(self, ref_val, contact_id, payment_date, amount):
+    #     journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
+    #     acc_payment_method = self.env['account.payment.method'].search([('code', '=', 'manual'), ('payment_type', '=', 'inbound')], limit=1)
 
-        payment_vals = {
-            'partner_id': contact_id,  # Customer/Vendor ID
-            'amount': amount,  # Payment amount
-            'payment_type': 'inbound',  # 'inbound' for customer payments, 'outbound' for vendor payments
-            'payment_method_id': acc_payment_method.id,  # Payment method (like manual, bank, etc.)
-            'journal_id': journal.id,  # The journal for the payment (e.g., bank journal)
-            'currency_id': journal.company_id.currency_id.id,  # Currency in which payment is made
-            'partner_type': 'customer',  # 'customer' or 'supplier'
-            'ref': ref_val,  # A reference note or description
-            'date': payment_date,  # The payment date
-        }
-        payment = self.env['account.payment'].create(payment_vals)
-        payment.sudo().action_post()
-        print("Payment Posted")
+    #     payment_vals = {
+    #         'partner_id': contact_id,  # Customer/Vendor ID
+    #         'amount': amount,  # Payment amount
+    #         'payment_type': 'inbound',  # 'inbound' for customer payments, 'outbound' for vendor payments
+    #         'payment_method_id': acc_payment_method.id,  # Payment method (like manual, bank, etc.)
+    #         'journal_id': journal.id,  # The journal for the payment (e.g., bank journal)
+    #         'currency_id': journal.company_id.currency_id.id,  # Currency in which payment is made
+    #         'partner_type': 'customer',  # 'customer' or 'supplier'
+    #         'ref': ref_val,  # A reference note or description
+    #         'date': payment_date,  # The payment date
+    #     }
+    #     payment = self.env['account.payment'].create(payment_vals)
+    #     payment.sudo().action_post()
+    #     print("Payment Posted. Payment Id is = ", payment.id)
 
-        email_template = self.env['mail.template'].search([('model', '=', 'account.payment')], limit=1)
-        email_template.sudo().send_mail(payment.id, force_send=True)
-        print("Payment Attachment Mail Sent")
+    #     # email_template = self.env['mail.template'].search([('model', '=', 'account.payment')], limit=1)
+    #     # email_template.sudo().send_mail(payment.id, force_send=True)
+    #     print('Id = ', self.id)
+    #     report = self.env.ref('volunteers_donors_non_profit.payment_receipt_pdf')
+    #     pdf_content, content_type = report._render_qweb_pdf([700])
+
+    #     # report = self.env['ir.actions.report']._get_report_from_name('volunteers_donors_non_profit.payment_receipt_pdf')
+    #     # pdf_content, content_type = report.sudo()._render_qweb_pdf(self.id)
+    #     attachment = self.env['ir.attachment'].create({
+    #         'name': 'Payment Receipt.pdf',
+    #         'type': 'binary',
+    #         'datas': base64.b64encode(pdf_content),
+    #         'res_model': 'account.payment',
+    #         'res_id': payment.id,
+    #         'mimetype': 'application/pdf'
+    #     })
+
+    #     mail_values = {
+    #         'subject': 'Your Payment Receipt',
+    #         'body_html': 'Dear Customer,<br/><br/>Please find your payment receipt attached.<br/><br/>Thank you.',
+    #         'email_to': self.partner_id.email,
+    #         'attachment_ids': [(6, 0, [attachment.id])],
+    #     }
+
+    #     mail = self.env['mail.mail'].create(mail_values)
+    #     mail.sudo().send()
+
+    #     print("Payment Attachment Mail Sent")
         
-        return payment
+    #     return payment
 
     def _register_payment(self, invoice_obj):
         # <> Register invoice payment

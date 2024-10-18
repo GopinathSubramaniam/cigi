@@ -49,6 +49,7 @@ Allow you to share tasks to volunteer on the portal of your website (Odoo standa
         'views/project_project_view.xml',
         'views/project_report.xml',
         'views/campaign_templates.xml',
+        'views/custom_payment_receipt_report.xml',
     ],
     'assets': {
         'web.assets_frontend': [

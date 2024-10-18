@@ -1,0 +1,169 @@
+<odoo>
+    <data>
+
+        <!-- <report
+            id="custom_payment_receipt_report"
+            model="account.payment"
+            string="Payment Receipt"
+            report_type="qweb-pdf"
+            file="volunteers_donors_non_profit.custom_payment_receipt_template"
+            name="volunteers_donors_non_profit.custom_payment_receipt_template"
+            print_report_name="'Payment_Receipt_' + object.name"
+        /> -->
+
+        <record id="custom_payment_receipt_report" model="ir.actions.report">
+            <field name="name">Payment Receipt</field>
+            <field name="model">account.payment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">volunteers_donors_non_profit.custom_payment_receipt_template</field>
+            <field name="report_file">volunteers_donors_non_profit.custom_payment_receipt_template</field>
+            <field name="print_report_name">(object._get_report_base_filename())</field>
+            <field name="attachment" />
+            <!-- <field name="binding_model_id" ref="model_account_move"/> -->
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="custom_payment_receipt_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="object">
+                    <div class="header"
+                        style="padding-bottom: 1rem; padding-top:1rem; border-bottom: 2px solid #3D3F98;">
+                        <div class="row">
+                            <div class="col-auto">
+                                <img t-if="object.company_id.logo"
+                                    t-attf-src="data:image/png;base64,#{object.company_id.logo}"
+                                    style="min-height: 80px; max-height:120px" />
+                            </div>
+                            <div class="col-auto">
+                                <h2>Centre for Information &amp; Guidance India</h2>
+                                <h5>HO: Golf Link Road, Chevayur, Calicut, Kerala, India - 673017</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        }
+                        td {
+                        font-size: 1.5rem;
+                        padding: 8px;
+                        text-align: left;
+                        }
+
+                        .text-center{
+                        text-align: center;
+                        }
+                    </style>
+
+                    <div class="page">
+                        <div style="text-align:center margin-bottom: 1rem;">
+                            <h2>
+                                <u>Payment Receipt</u>
+                            </h2>
+                        </div>
+                        <table
+                            class="table"
+                            style="padding-bottom: 2rem;">
+                            <tr>
+                                <td>Date</td>
+                                <td>
+                                    <t t-esc="object.date" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Payment Receipt No</td>
+                                <td>
+                                    <t t-esc="object.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td>
+                                    <t t-esc="object.partner_id.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>
+                                    <t t-esc="object.partner_id.email" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Contact No</td>
+                                <td>
+                                    <t t-esc="object.partner_id.mobile" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Received Amount(Rs)</td>
+                                <td>
+                                    <t t-esc="object.amount" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Received Amount in Words</td>
+                                <td>
+                                    <t t-esc="object.currency_id.amount_to_text(object.amount)" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Project Name</td>
+                                <td>
+                                    <t t-esc="object.ref.split(',')[1].split(':')[1]" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mode Of Payment</td>
+                                <td>
+                                    Online
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Payment Ref</td>
+                                <td>
+                                    <t t-esc="object.ref.split(',')[0].split(':')[1]" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <t t-esc="object.ref.split(',')[2].split(':')[0]" />
+                                </td>
+                                <td>
+                                    <t t-esc="object.ref.split(',')[2].split(':')[1]" />
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- Add more fields as needed -->
+                        <p
+                            style="font-size: 1.5rem; margin-bottom: 1rem; margin-top: 2rem;">
+                            <b>Note:</b> This is system generated receipt and no signature is
+                            required. For online payment any discrepancy, we will contact you in 7
+                            working days. </p>
+                        <p style="font-size: 1.5rem;">Donations are exempted under 80G of IT Act</p>
+                    </div>
+
+                    <div style="margin-top: 4rem; padding-top: 2rem; border-top: 2px solid #3D3F98;">
+                        <table class="table">
+                            <tr>
+                                <td class="text-center">www.cigi.org</td>
+                                <td class="text-center">Ph +91 808666 2004</td>
+                                <td class="text-center"> Email: helpdesk@cigi.org</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center" colspan="3">(Registered Under Societies
+                                    Registration Act XXI 1860 No. 7/97)</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center" colspan="3">
+                                    Pan Card No: AAATC2432N, 12A Reg No: AAATC2432NE1998601, 80G Reg
+                                    No: AAATC243NF2021401
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -25,13 +25,19 @@ class CampaignController(http.Controller):
     # and will be redirected to the payment page
     @http.route(['/campaign/donate/<int:campaign_id>'], type="http", auth="public", website=True, sitemap=False, csrf=False)
     def donate(self, campaign_id, **kwargs): 
-
         name = kwargs['name']
         email = kwargs['email']
         mobile = kwargs['mobile']
         city = kwargs['city']
+        id_type = kwargs['id_type']
         id_number = kwargs['id_number']
         amount = kwargs['amount']
+
+        tag = request.env['res.partner.category'].search([('name', '=', 'Donor')], limit=1)
+        if not tag:
+            tag = request.env['res.partner.category'].create({
+                'name': 'Donor'
+            })
 
         contact = {
             "name": name,
@@ -39,10 +45,11 @@ class CampaignController(http.Controller):
             "email": email,
             "mobile": mobile,
             "city": city,
-            "comment": id_number,
+            "comment": ('%s: %s' % (id_type, id_number)),
             "active": True,
             "is_donors": True,
-            'company_id': 1 # Default company id
+            'company_id': 1, # Default company id
+            'category_id': [(6, 0, [tag.id])] 
         }
 
         # Create contact data in res.partner model
@@ -58,7 +65,8 @@ class CampaignController(http.Controller):
     
     @http.route(['/campaign/payment/success/<string:return_val>'], type="http", auth="public", website=True, sitemap=False, csrf=False)
     def payment_success(self, return_val): 
-        cust_payments = request.env['account.payment'].search([('ref', '=', return_val)])
+        cust_payments = request.env['account.payment'].search([('ref', 'ilike', return_val)])
+        print('return_val = ', return_val)
         if len(cust_payments) == 0:
             # Checking payment status
             payload = {'order_id': return_val}
@@ -75,7 +83,8 @@ class CampaignController(http.Controller):
 
                 # Create bill for the contact_id. We will share this bill as a receipt with donor
                 today = date.today().strftime('%Y-%m-%d')
-                cust_payment = request.env['payment.method']._create_payment_in_account(return_val, contact.id, today, paid_amount)
+                # cust_payment = request.env['payment.method']._create_payment_in_account(return_val, contact.id, today, paid_amount)
+                cust_payment = request.env['account.payment']._create_payment_in_account(return_val, contact.id, today, paid_amount)
 
                 # <> Create campaign payment data
                 campaign_payment_data = {

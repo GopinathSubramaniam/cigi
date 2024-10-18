@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+import math
 
 class Campaign(models.Model):
     _name = 'volunteer.campaign'
@@ -99,7 +100,7 @@ class Campaign(models.Model):
     def _calculate_percent(self):
         for o in self:
             if o.fund_need > 0:
-                o.fund_received_percent = round((o.fund_received / o.fund_need ) * 100, 2);
+                o.fund_received_percent = math.ceil((o.fund_received / o.fund_need ) * 100)
             else:
                 o.fund_received_percent = 0.00
 
