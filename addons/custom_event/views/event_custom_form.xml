@@ -1,0 +1,125 @@
+<odoo>
+    <template id="event_custom_registration_template" name="Event Registration Page">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="mt-4">
+                    <form id="attendee_registration" class="js_website_submit_form"
+                        method="post"
+                        t-attf-action="/event/#{slug(event)}/registration/custom_confirm">
+                        <input type="hidden" name="csrf_token"
+                            t-att-value="request.csrf_token()" />
+                        <div class="row">
+                            <div class="col-md-7 col-lg-8">
+                                <h4>Registration for Event: <t t-esc="event.name" /></h4>
+                                <div class="align-items-center mb-4">
+                                    <h5>Enter Attendees Information</h5>
+                                </div>
+                                <t t-set="counter" t-value="0" />
+                                <t t-set="input_type_by_question_type"
+                                    t-value="{'name': 'text', 'email': 'email', 'phone': 'tel', 'company_name': 'text'}" />
+                                <t t-if="availability_check" t-foreach="tickets" t-as="ticket">
+                                    <t t-foreach="range(1, ticket['quantity'] + 1)"
+                                        t-as="att_counter"
+                                        name="attendee_loop">
+                                        <t t-set="counter" t-value="counter + 1" />
+                                        <div class="mb-4">
+                                            <h5
+                                                t-attf-class="mt-1 pb-2 #{'border-bottom' if event.question_ids else ''}">Ticket
+                                                #<span t-out="counter" /> <small
+                                                    class="text-muted">- <span
+                                                        t-out="ticket['name']" /></small></h5>
+                                            <div t-if="event.specific_question_ids" class="row">
+                                                <t t-foreach="event.specific_question_ids"
+                                                    t-as="question">
+                                                    <div class="col-lg-6 mt-2">
+                                                        <t
+                                                            t-call="website_event.registration_event_question">
+                                                            <t t-set="registration_index"
+                                                                t-value="counter" />
+                                                        </t>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                            <input class="d-none" type="text"
+                                                t-attf-name="#{counter}-event_ticket_id"
+                                                t-attf-value="#{ticket['id']}" />
+                                        </div>
+                                    </t>
+                                </t>
+                                <div t-if="availability_check and event.general_question_ids"
+                                    class="border-top o_wevent_registration_question_global">
+                                    <div class="row">
+                                        <t t-foreach="event.general_question_ids"
+                                            t-as="question">
+                                            <div class="mt-2"
+                                                t-att-class="question.question_type=='text_box' and 'col-lg-12' or 'col-lg-6'">
+                                                <t
+                                                    t-call="website_event.registration_event_question">
+                                                    <t t-set="registration_index" t-value="0" />
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                                <t t-elif="not availability_check">
+                                    <div class="border-bottom">
+                                        <strong> You ordered more tickets than available seats</strong>
+                                    </div>
+                                </t>
+                                <div class="my-4">
+                                    <a href="/event" class="btn btn-secondary">Cancel</a>
+                                    <button type="submit" class="btn btn-primary"
+                                        t-if="availability_check">Confirm
+                                        Registration</button>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-lg-4 my-5">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th>
+                                            <span>Total Amount</span>
+                                            <br />
+                                            <small> (Total <t
+                                                    t-esc="tickets[0]['quantity']" /> Tickets) </small>
+                                        </th>
+                                        <th> INR <span id="total-amount">
+                                                <t t-esc="total_amount" />
+                                            </span>
+                                        <input
+                                                id="order_amount"
+                                                type="hidden" t-att-value="total_amount" />
+                                        <div
+                                                id="discounted-amount"></div>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <input type="text" id="coupon_code" name="coupon_code"
+                                                class="form-control" placeholder="Enter Coupon Code" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="checkCouponValidity()">Apply</button>
+                                            <button type="button" class="btn btn-danger"
+                                                onclick="removeCoupon()">Remove</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div id="coupon-result"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </t>
+    </template>
+
+</odoo>

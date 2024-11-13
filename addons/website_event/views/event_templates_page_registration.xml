@@ -286,40 +286,6 @@
         </div>
     </template>
 
-    <!-- <> # Customize Event order success -->
-    <template id="website_event_order_success">
-        <t t-call="website.layout">
-            <div class="container">
-                <div class="row mt-4">
-                    <div class="col text-center mb-4">
-                        <h2>Registered Successfully. Your Payment Order #: <t t-esc="order_id" /></h2>
-                        <h6>Please check your email for the event registration receipt.</h6>
-                        <img class="w-25"
-                            src="/volunteers_donors_non_profit/static/description/payment-success.gif" />
-                        <div>
-                            <a href="/event" class="btn btn-primary">
-                                <i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Events </a>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div t-if="attendees" class="row mb-3">
-                            <div class="col-12 mb-2">
-                                <a class="btn btn-primary" title="Download All Tickets"
-                                    target="_blank"
-                                    t-attf-href="/event/{{ event.id }}/my_tickets?registration_ids={{ attendees.ids }}&amp;tickets_hash={{ event._get_tickets_access_hash(attendees.ids) }}">
-                                    Download Tickets <i class="ms-1 fa fa-download" />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
-        </t>
-    </template>
-    <!-- </> -->
-
     <template id="registration_event_question" name="Registration Event Question">
         <label t-out="question.title" />
         <span t-if="question.is_mandatory_answer">*</span>
@@ -361,11 +327,12 @@
                             <a class="h4 text-primary" t-out="event.name"
                                 t-att-href="event.website_url" />
                         </u> -->
-                        <h5>
-                            <span>Your Reference Number: <t t-out="order_id" /></span>. <span>Invoice
-                            for <i class="fa fa-rupee" /><t t-out="price" /> will be sent to your
-                            email.</span>
-                        </h5>
+                        <t t-if="price">
+                            <h5>
+                                <span>Your Reference Number: <t t-out="order_id" /></span>. <span>Invoice
+                                    will be sent to your email.</span>
+                            </h5>
+                        </t>
                     </div>
                 </div>
                 <div t-if="attendees" class="row">
@@ -516,12 +483,13 @@
                             aria-label="Close"></button>
                     </div>
 
+                    <!-- t-attf-action="/event/#{slug(event)}/registration/new"
+                     t-attf-action="/event/register/{{ event.id }}" 
+                      -->
                     <form
                         t-if="event.event_registrations_open and (not event.event_ticket_ids or any(not ticket.is_expired for ticket in event.event_ticket_ids))"
                         id="registration_form"
-                        t-attf-action="/event/#{slug(event)}/registration/new" method="post"
-                        itemscope="itemscope" itemprop="offers"
-                        itemtype="http://schema.org/AggregateOffer">
+                        t-attf-action="/event/custom_register/{{ event.id }}" method="post">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
                         <div id="o_wevent_tickets" class="shadow-sm o_wevent_js_ticket_details">
                             <div t-if="registration_error_code == 'insufficient_seats'"
@@ -668,8 +636,8 @@
                                     <button type="button" class="btn btn-light"
                                         data-bs-dismiss="modal">Close</button>
                                     <button type="submit"
-                                        class="btn btn-primary o_wait_lazy_js a-submit"
-                                        t-attf-id="#{event.id}" disabled="disabled"> Register <t
+                                        class="btn btn-primary"
+                                        t-attf-id="#{event.id}"> Register<t
                                             t-if="event.seats_limited and event.seats_max and event.seats_available &lt;= (event.seats_max * 0.2)">
                                         (only <t t-out="event.seats_available" /> available) </t>
                                     </button>

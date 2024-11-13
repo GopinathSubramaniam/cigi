@@ -57,9 +57,9 @@
                     </style>
 
                     <div class="page">
-                        <div style="text-align:center margin-bottom: 1rem;">
+                        <div style="text-align:center; margin-bottom: 1rem;">
                             <h2>
-                                <u>Payment Receipt</u>
+                                Payment Receipt
                             </h2>
                         </div>
                         <table
@@ -68,7 +68,7 @@
                             <tr>
                                 <td>Date</td>
                                 <td>
-                                    <t t-esc="object.date" />
+                                    <t t-esc="object.date.strftime('%d/%m/%Y')" />
                                 </td>
                             </tr>
                             <tr>
@@ -125,12 +125,13 @@
                                     <t t-esc="object.ref.split(',')[0].split(':')[1]" />
                                 </td>
                             </tr>
-                            <tr>
+                            <tr
+                                t-if="len(object.ref.split(',')) > 3 and len(object.ref.split(',')[3].split(':')) > 1">
                                 <td>
-                                    <t t-esc="object.ref.split(',')[2].split(':')[0]" />
+                                    PAN Number
                                 </td>
                                 <td>
-                                    <t t-esc="object.ref.split(',')[2].split(':')[1]" />
+                                    <t t-esc="object.ref.split(',')[3].split(':')[1]" />
                                 </td>
                             </tr>
                         </table>

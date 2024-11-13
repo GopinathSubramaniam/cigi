@@ -7,14 +7,20 @@ class AccountPayment(models.Model):
     _inherit = 'account.payment'
 
     def _create_payment_in_account(self, ref_val, contact_id, payment_date, amount):
+      
         journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
         acc_payment_method = self.env['account.payment.method'].search([('code', '=', 'manual'), ('payment_type', '=', 'inbound')], limit=1)
         campaign_id = ref_val.split('_')[2]
         campaign = self.env['volunteer.campaign'].sudo().browse(int(campaign_id))
         contact = self.env['res.partner'].sudo().browse(int(contact_id))
+
+        print(contact)
         # <> Removing the html tags 
-        clean = re.compile('<.*?>')
-        comt =  re.sub(clean, '', contact.comment)
+        print(contact.comment)
+        comt = ''
+        if(contact.comment):
+            clean = re.compile('<.*?>')
+            comt =  re.sub(clean, '', contact.comment)
         # </>
 
         payment_vals = {

@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime
 
 from werkzeug.utils import redirect
@@ -25,43 +26,66 @@ class CampaignController(http.Controller):
     # and will be redirected to the payment page
     @http.route(['/campaign/donate/<int:campaign_id>'], type="http", auth="public", website=True, sitemap=False, csrf=False)
     def donate(self, campaign_id, **kwargs): 
-        name = kwargs['name']
-        email = kwargs['email']
-        mobile = kwargs['mobile']
-        city = kwargs['city']
-        id_type = kwargs['id_type']
-        id_number = kwargs['id_number']
-        amount = kwargs['amount']
+        
+        try:
 
-        tag = request.env['res.partner.category'].search([('name', '=', 'Donor')], limit=1)
-        if not tag:
-            tag = request.env['res.partner.category'].create({
-                'name': 'Donor'
-            })
+            amount = kwargs['amount']
+            name = kwargs['name']
+            email = kwargs['email']
+            mobile = kwargs['mobile']
+            
+            # Country of residence
+            country_of_residence = request.env['res.country'].sudo().browse(int(kwargs['country_of_residence']))
+            
+            # PAN Number
+            id_number = kwargs['id_number']
+            
+            street = kwargs['address']
+            state_id = kwargs['state_id']
+            city = kwargs['city']
 
-        contact = {
-            "name": name,
-            "complete_name": name,
-            "email": email,
-            "mobile": mobile,
-            "city": city,
-            "comment": ('%s: %s' % (id_type, id_number)),
-            "active": True,
-            "is_donors": True,
-            'company_id': 1, # Default company id
-            'category_id': [(6, 0, [tag.id])] 
-        }
+            # Address country
+            country = request.env['res.country'].sudo().search([('code', '=', 'IN')], limit=1)
 
-        # Create contact data in res.partner model
-        created_contact = request.env["res.partner"].sudo().create(contact);
+            tag = request.env['res.partner.category'].search([('name', '=', 'Donor')], limit=1)
+            if not tag:
+                tag = request.env['res.partner.category'].create({
+                    'name': 'Donor'
+                })
 
-        # 2024100409_23_2
-        order_id = ('%s_%s_%s' % (datetime.now().strftime('%Y%m%d%H'), created_contact.id, campaign_id))
+            # <> Create a new contact If the contact is not exists
+            existing_cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
+            print('Comment = ', existing_cont.comment)
+            if not existing_cont:
+                contact = {
+                    "name": name,
+                    "complete_name": name,
+                    "email": email,
+                    "mobile": mobile,
+                    "city": city,
+                    "country_id": country.id,
+                    "state_id": state_id,
+                    "street": street,
+                    "comment": ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence.name, 'PAN', id_number)),
+                    "active": True,
+                    "is_donors": True,
+                    'company_id': 1, # Default company id
+                    'category_id': [(6, 0, [tag.id])] 
+                }
+                existing_cont = request.env["res.partner"].sudo().create(contact);
+            elif not existing_cont.comment:
+                existing_cont.write({'comment': ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence.name, 'PAN', id_number))})
+            # </>
 
-        # order_id, name, amount, email, phone, desc, callback_url
-        callbackurl = payment_utils.get_payment_donation_callback()+order_id
-        payment_url = request.env['payment.method']._redirect_to_payment_page(order_id, name, amount, email, mobile, 'Donation', callbackurl)
-        return redirect(payment_url)
+            # 2024100409_23_2
+            order_id = ('%s_%s_%s' % (datetime.now().strftime('%Y%m%d%H'), existing_cont.id, campaign_id))
+
+            # order_id, name, amount, email, phone, desc, callback_url
+            callbackurl = payment_utils.get_payment_donation_callback()+order_id
+            payment_url = request.env['payment.method']._redirect_to_payment_page(order_id, name, amount, email, mobile, 'Donation', callbackurl)
+            return redirect(payment_url)
+        except Exception as e:
+           raise UserError(f"Something went wrong. Please try again later")
     
     @http.route(['/campaign/payment/success/<string:return_val>'], type="http", auth="public", website=True, sitemap=False, csrf=False)
     def payment_success(self, return_val): 
@@ -95,7 +119,7 @@ class CampaignController(http.Controller):
                 }
                 campaign_payment_model = request.env['volunteer.campaign.payment']
                 campaign_payment_model.create(campaign_payment_data)
-                print("================== Campaign Payment Created ==================")
+                
                 # </>
 
                 return request.render('volunteers_donors_non_profit.website_campaign_donation_success', {})
@@ -103,3 +127,22 @@ class CampaignController(http.Controller):
                 return request.render("website_event.payment_failed")
         else:
             return request.render("website_event.order_alread_created", {'order_id': return_val})
+        
+
+    @http.route('/app/get_states', type='http', auth="public", website=True)
+    def get_states(self, country_id):
+        print('Country Id = ', country_id)
+        if country_id:
+            states = request.env['res.country.state'].sudo().search([('country_id', '=', int(country_id))])
+            state_list = [{'id': state.id, 'name': state.name} for state in states]
+            return request.make_response(json.dumps({'states': state_list}), headers=[('Content-Type', 'application/json')])
+        return request.make_response(json.dumps({'states': []}), headers=[('Content-Type', 'application/json')])
+    
+    @http.route('/app/get_states_by_country_code', type='http', auth="public", website=True)
+    def get_states(self, country_code):
+        if country_code:
+            country = request.env['res.country'].sudo().search([('code', '=', country_code)])
+            states = request.env['res.country.state'].sudo().search([('country_id', '=', country.id)])
+            state_list = [{'id': state.id, 'name': state.name} for state in states]
+            return request.make_response(json.dumps({'states': state_list}), headers=[('Content-Type', 'application/json')])
+        return request.make_response(json.dumps({'states': []}), headers=[('Content-Type', 'application/json')])

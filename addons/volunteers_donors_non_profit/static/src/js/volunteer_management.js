@@ -87,5 +87,37 @@ function buildProgressingBar(class_name) {
     }
 }
 
+function enableTaxBenefit(ev) {
+    $('.tax_benefit').addClass('d-none');
+    $('#country_of_residence, #id_number, #state_id, #city, #zip, #address').removeAttr('required');
+    if (ev.checked) {
+        $('.tax_benefit').removeClass('d-none');
+        $('#country_of_residence, #id_number, #state_id, #city, #zip, #address').attr('required', 1);
+    }
+}
+
+function getStates(ev) {
+    $.ajax({
+        url: '/app/get_states_by_country_code',
+        type: 'GET',
+        data: { 'country_code': 'IN' },
+        success: function (data) {
+            var $stateDropdown = $('#state_id');
+            $stateDropdown.empty();
+
+            if (data.states) {
+                $stateDropdown.append('<option value="">Select a state</option>');
+                $.each(data.states, function (index, state) {
+                    $stateDropdown.append('<option value="' + state.id + '">' + state.name + '</option>');
+                });
+            } else {
+                $stateDropdown.append('<option value="">No states available</option>');
+            }
+        }
+    });
+}
+
+
 buildProgressingBar('progressing-indicator');
 buildProgressingBar('progressing-indicator-campaign');
+getStates();

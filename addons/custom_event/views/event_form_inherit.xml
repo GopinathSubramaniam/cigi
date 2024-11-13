@@ -11,4 +11,16 @@
         </field>
     </record>
 
+    <!-- Make fied "Tags" mandatory in UI -->
+    <record id="view_partner_form_custom" model="ir.ui.view">
+        <field name="name">res.partner.form.custom</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="category_id" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+        </field>
+    </record>
+
 </odoo>

@@ -80,13 +80,13 @@ class EventRegistration(models.Model):
                 )
                 vals.update(so_line_vals)
         registrations = super(EventRegistration, self).create(vals_list)
-        for registration in registrations:
-            if registration.sale_order_id:
-                registration.message_post_with_source(
-                    'mail.message_origin_link',
-                    render_values={'self': registration, 'origin': registration.sale_order_id},
-                    subtype_xmlid='mail.mt_note',
-                )
+        # for registration in registrations:
+        #     if registration.sale_order_id:
+        #         registration.message_post_with_source(
+        #             'mail.message_origin_link',
+        #             render_values={'self': registration, 'origin': registration.sale_order_id},
+        #             subtype_xmlid='mail.mt_note',
+        #         )
         return registrations
 
     def write(self, vals):

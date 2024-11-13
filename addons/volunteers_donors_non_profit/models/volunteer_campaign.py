@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 import math
+from datetime import datetime
 
 class Campaign(models.Model):
     _name = 'volunteer.campaign'
@@ -50,7 +51,7 @@ class Campaign(models.Model):
         compute = '_calculate_percent'
     )
 
-    end_date = fields.Date(
+    end_date = fields.Datetime(
         string="Campaign End Date",
         required = True
     )
@@ -89,6 +90,12 @@ class Campaign(models.Model):
         copy=False,
     )
 
+    is_expired = fields.Boolean(
+        default = False,
+        store = False,
+        compute = '_is_expired'
+    )
+
     def _fund_received(self):
         self.fund_received = 0.00
         for c in self:
@@ -104,3 +111,6 @@ class Campaign(models.Model):
             else:
                 o.fund_received_percent = 0.00
 
+    def _is_expired(self):
+        for o in self:
+            o.is_expired = datetime.now() > o.end_date
