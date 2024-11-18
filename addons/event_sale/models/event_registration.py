@@ -26,12 +26,18 @@ class EventRegistration(models.Model):
 
     @api.depends('sale_order_id.state', 'sale_order_id.currency_id', 'sale_order_line_id.price_total')
     def _compute_registration_status(self):
+       
         self.filtered(lambda reg: not reg.state).state = 'draft'
         for so_line, registrations in self.grouped('sale_order_line_id').items():
             cancelled_so_registrations = registrations.filtered(lambda reg: reg.sale_order_id.state == 'cancel')
             cancelled_so_registrations.state = 'cancel'
             cancelled_registrations = cancelled_so_registrations | registrations.filtered(lambda reg: reg.state == 'cancel')
-            if not so_line or float_is_zero(so_line.price_total, precision_digits=so_line.currency_id.rounding):
+            # if not so_line or float_is_zero(so_line.price_total, precision_digits=so_line.currency_id.rounding):
+            
+            if(len(registrations) > 0 and registrations[0].event_ticket_id.price):
+                registrations.sale_status = 'to_pay'
+                registrations.filtered(lambda reg: reg.state == 'draft').write({"state": "open"})
+            elif not so_line or float_is_zero(so_line.price_total, precision_digits=so_line.currency_id.rounding):
                 registrations.sale_status = 'free'
                 registrations.filtered(lambda reg: reg.state == 'draft').write({"state": "open"})
             else:
