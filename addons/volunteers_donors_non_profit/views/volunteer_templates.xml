@@ -1,0 +1,241 @@
+<odoo>
+    <template id="volunteer_form" name="Volunteer Form">
+        <t t-call="website.layout">
+            <div class="container my-3">
+                <div class="col text-center">
+                    <h4 class="my-4">Become a Volunteer</h4>
+                </div>
+                <form id="volunteer_form" method="post"
+                    t-attf-action="/web/volunteer/registration"
+                    class="js_website_submit_form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                    <!-- Form top -->
+                    <div class="row">
+                        <div class="col">
+                            <!-- 1 Name -->
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" name="name" placeholder="Enter Name"
+                                    required="1"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                />
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!-- 1 Email -->
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" id="email"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Email" required="1" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Send OTP div -->
+                    <div class="row mb-3 justify-content-center" id="send_otp_form">
+                        <div class="col-3 text-center">
+                            <button class="btn btn-primary" id="send_otp_btn" onclick="sendOTP()">Send
+                                OTP</button>
+                        </div>
+                    </div>
+
+                    <!-- Verify OTP div -->
+                    <div class="row d-none justify-content-center" id="verify_otp_form">
+                        <div class="col-3 text-center">
+                            <div class="mb-3">
+                                <input type="text" id="entered_otp"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter OTP" required="1" />
+                            </div>
+                            <button class="btn btn-primary" id="verify_otp_btn"
+                                onclick="verifyOTP()">Verify OTP</button>
+                            <br />
+                            <small class="fw-bold">(Please stay here and don't refresh the page)</small>
+                        </div>
+                    </div>
+
+                    <!-- Information -->
+                    <div class="row d-none div_form">
+                        <!-- Col 1 -->
+                        <div class="col">
+                            <!-- 2 Phone -->
+                            <div class="mb-3">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="phone"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Phone"
+                                    required="1" min="15" />
+                            </div>
+                            <!-- 3 Gender -->
+                            <div class="mb-3">
+                                <label class="form-label">Gender</label>
+                                <select name="gender"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    required="1">
+                                    <option value="">-- Select Gender --</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Transgender">Transgender</option>
+                                </select>
+                            </div>
+
+                            <!-- 4 Country of Residence -->
+                            <div class="mb-3">
+                                <label class="form-label">Country of Residence</label>
+                                <select name="country_id" id="country_id" required="1"
+                                    class="form-control form-control-sm border-0 border-bottom">
+                                    <option value="">-- Country of Residence --</option>
+                                    <t t-foreach="request.env['res.country'].sudo().search([])"
+                                        t-as="country">
+                                        <option t-att-value="country.id">
+                                            <t t-esc="country.name" />
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+
+                            <!-- 5 City -->
+                            <div class="mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" name="city"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter City" />
+                            </div>
+
+                            <!-- 6 Highest Qualification -->
+                            <div class="mb-3">
+                                <label class="form-label">Qualification</label>
+                                <input type="text" name="qualification"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Qualification" required="1" />
+                            </div>
+
+                            <!-- 7 Current Job Position -->
+                            <div class="mb-3">
+                                <label class="form-label">Job Position</label>
+                                <input type="text" name="function"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Job Position" required="1" />
+                            </div>
+
+                            <!-- 8 Volunteer Type -->
+                            <div class="mb-3">
+                                <label class="form-label">Volunteer Type</label>
+                                <select name="res_volunteer_type_id" id="res_volunteer_type_id"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    required="1">
+                                    <option value="">-- Select Volunteer Type --</option>
+                                    <t t-foreach="request.env['volunteer.type'].sudo().search([])"
+                                        t-as="t">
+                                        <option t-att-value="t.id">
+                                            <t t-esc="t.name" />
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <!-- 9 Notes -->
+                            <div class="mb-3">
+                                <label class="form-label">Notes</label>
+                                <textarea type="text" name="comment"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Comment" required="1" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Col 2 -->
+                        <div class="col">
+                            <!-- 2 WhatsApp No -->
+                            <div class="mb-3">
+                                <label class="form-label">Mobile</label>
+                                <input type="text" name="mobile"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Mobile" required="1" />
+                            </div>
+
+                            <!-- 3 Address -->
+                            <div class="mb-3">
+                                <label class="form-label">Street</label>
+                                <input type="text" name="street"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Address" required="1" />
+                            </div>
+
+                            <!-- 4 State -->
+                            <div class="mb-3">
+                                <label class="form-label">State</label>
+                                <select name="state_id" id="state_id"
+                                    class="form-control form-control-sm border-0 border-bottom">
+                                    <option value="">-- Select a state --</option>
+                                </select>
+                            </div>
+
+                            <!-- 5 Website / Linkedin Link -->
+                            <div class="mb-3">
+                                <label class="form-label">Website</label>
+                                <input type="text" name="website"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Website/Linkedin Link" />
+                            </div>
+
+                            <!-- 6 Education Specialization -->
+                            <div class="mb-3">
+                                <label class="form-label">Specialization</label>
+                                <input type="text" name="specialization"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Specialization" required="1" />
+                            </div>
+
+                            <!-- 7 Institue/Company Name -->
+                            <div class="mb-3">
+                                <label class="form-label">Institue/Company Name</label>
+                                <input type="text" name="company_name"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    placeholder="Enter Institue/Company Name" />
+                            </div>
+
+                            <!-- 8 Volunteer Skills -->
+                            <div class="mb-3">
+                                <label class="form-label">Volunteer Skills</label>
+                                <select name="res_volunteer_skill_ids" id="res_volunteer_skill_ids"
+                                    class="form-control form-control-sm border-0 border-bottom"
+                                    multiple="multiple" required="1">
+                                    <t t-foreach="request.env['volunteer.skills'].sudo().search([])"
+                                        t-as="s">
+                                        <option t-att-value="s.id">
+                                            <t t-esc="s.name" />
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-none div_form">
+                        <div class="col text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row justify-content-center">
+                    <div class="col-3 text-center">
+                        <!-- Success message -->
+                        <div t-if="success_msg">
+                            <div class="alert alert-success" role="alert">
+                                <t t-esc="success_msg" />
+                            </div>
+                        </div>
+
+                        <!-- Error message -->
+                        <div t-if="err_msg">
+                            <div class="alert alert-danger" role="alert">
+                                <t t-esc="err_msg" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

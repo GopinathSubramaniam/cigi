@@ -1,3 +1,4 @@
+let otpRes = { 'email': '', 'otp': '' };
 
 $(function () {
     var options = {
@@ -106,7 +107,7 @@ function getStates(ev) {
             $stateDropdown.empty();
 
             if (data.states) {
-                $stateDropdown.append('<option value="">Select a state</option>');
+                $stateDropdown.append('<option value="">-- Select a state --</option>');
                 $.each(data.states, function (index, state) {
                     $stateDropdown.append('<option value="' + state.id + '">' + state.name + '</option>');
                 });
@@ -117,6 +118,60 @@ function getStates(ev) {
     });
 }
 
+function sendOTP(ev) {
+    console.log('called');
+    $('#send_otp_btn').attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> &nbsp; Send OTP')
+
+    const email = $('#email').val();
+    if (email) {
+        $.ajax({
+            url: '/web/volunteer/send_otp',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ 'email': email }),
+            success: function (data) {
+                if (data.otp) {
+                    otpRes = data;
+                    $('#send_otp_btn').attr('disabled', false).html('Send OTP')
+                    $('#send_otp_form').addClass('d-none');
+                    $('#verify_otp_form').removeClass('d-none');
+                } else {
+                    console.log('Failed to send OTP');
+                }
+            }
+        });
+    }
+
+}
+
+function verifyOTP() {
+    const email = $('#email').val();
+    const entered_otp = $('#entered_otp').val();
+
+    if (email == otpRes.email && entered_otp == otpRes.otp) {
+        $('#verify_otp_btn').attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> &nbsp; Verify OTP')
+        setTimeout(() => {
+            $('#verify_otp_btn').attr('disabled', false).html('<i class="fa fa-check-circle"></i> &nbsp; Verify OTP')
+            setTimeout(() => {
+                $('#verify_otp_form').addClass('d-none');
+                // Filling existing infromation
+                if (otpRes.data) {
+                    const o = otpRes.data;
+                    const fields = ['phone', 'gender', 'country_id', 'city', 'qualification', 'function', 'res_volunteer_type_id',
+                        'comment', 'street', 'state_id', 'website', 'specialization', 'company_name', 'mobile']
+
+                    fields.forEach((field, i) => {
+                        if (o[field]) $(`[name=${field}]`).val(o[field]);
+                    });
+                    // $('[name=res_volunteer_skill_ids]').val(o.res_volunteer_skill_ids);
+                }
+                $('.div_form').removeClass('d-none');
+            }, 1000);
+        }, 3000)
+    } else {
+        alert('Invalid OTP');
+    }
+}
 
 buildProgressingBar('progressing-indicator');
 buildProgressingBar('progressing-indicator-campaign');

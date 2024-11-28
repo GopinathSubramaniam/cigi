@@ -34,10 +34,14 @@ class ResPartner(models.Model):
         copy=True
     )
 
+    # <> New Fields
+    gender = fields.Text(string="Gender", copy=True)
+    qualification = fields.Text(string="Highest Qualification", copy=True)
+    specialization = fields.Text(string="Education Specialization", copy=True)
+    # </>
+
     def action_custom_campaign(self):
-        print("::::::::::::::: 1 :::::::::::::::::")
         action = self.env["ir.actions.actions"]._for_xml_id("volunteers_donors_non_profit.action_custom_campaign")
-        print(":::::::::::::::: 2 ::::::::::::::::")
         action['context'] = {}
         action['domain'] = [('volunteer_campaign_payment_ids.partner_id', 'child_of', self.ids)]
         return action

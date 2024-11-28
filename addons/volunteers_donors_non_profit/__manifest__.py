@@ -43,6 +43,7 @@ Allow you to share tasks to volunteer on the portal of your website (Odoo standa
         'views/res_partner_view.xml',
         'views/volunteer_skills_view.xml',
         'views/volunteer_type_view.xml',
+        'views/volunteer_templates.xml',
         
         'views/crm_lead_view.xml',
         'views/volunteer_working_details_view.xml',
