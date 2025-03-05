@@ -52,8 +52,8 @@ class AccountPayment(models.Model):
         mail_template = """Dear Donor,<br/><br/>
                             Thank you for your generous support of CIGI. Your contribution plays a vital role in advancing our mission, and we assure you that every rupee will be used to make a meaningful impact.<br/><br/>
                             Please find your payment receipt attached for your reference. If there are any discrepancies with your online payment, we will reach out to you within seven working days to resolve the issue. <br/><br/>
-                            We truly appreciate your generosity and commitment to our cause. <br/>
-                            Best regards,<br/>
+                            We truly appreciate your generosity and commitment to our cause. <br/><br/>
+                            Best Regards,<br/>
                             Team CIGI
                         """
 

@@ -337,7 +337,7 @@ class PaymentMethod(models.Model):
         pdf_base64 = base64.b64encode(pdf_content)
         
         attachment = self.env['ir.attachment'].sudo().create({
-            'name': 'Invoice.pdf',
+            'name': 'Receipt.pdf',
             'type': 'binary',
             'datas': pdf_base64,
             'res_model': 'account.move',
@@ -347,9 +347,17 @@ class PaymentMethod(models.Model):
         })
         
         print('Email = ', invoice.partner_id.email)
+        mail_template = """Hello,<br/><br/>
+                            Thank you for registering the event. Kindly find the attached receipt for your payment. <br/><br/>
+                            This system is generated receipt and no signature is required.<br/><br/>
+                            For any discrepancy in online payment, we will contact you in 7 working days.<br/><br/>
+                            Best Regards,<br/>
+                            Team CIGI
+                        """
+        
         email_values = {
-                'subject': f'Invoice {invoice.name}',
-                'body_html': f'<p>Hello,</p><p>Please find attached your invoice {invoice.name}.</p>',
+                'subject': f'Receipt {invoice.name}',
+                'body_html': mail_template,
                 'email_to': invoice.partner_id.email,
                 'email_from': 'erp@cigi.org',
                 'email_cc': False,
