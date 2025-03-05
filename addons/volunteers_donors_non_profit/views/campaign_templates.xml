@@ -19,18 +19,18 @@
                     <div class="row">
                         <t t-if="len(data) > 0">
                             <t t-foreach="data" t-as="c">
-                                <div class="col-12 col-md-4 col-lg-3 mb-4">
+                                <div class="col-12 col-md-4 col-lg-4 mb-4">
                                     <a t-attf-href="/campaign/detail/{{c.id}}"
                                         class="text-decoration-none">
-                                        <div class="card" style="height: 400px;">
+                                        <div class="card">
                                             <img class="card-img-top img-fluid"
                                                 t-att-src="image_data_uri(c.first_image)"
                                                 alt="Campaign Image" />
-                                            <div class="card-body">
+                                            <div class="card-body pb-0" style="height: 200px;">
                                                 <div class="row mb-2">
                                                     <div class="col">
                                                         <h5>
-                                                            <t t-esc="c.title" />
+                                                            <t t-esc="c.title[:40].strip() + '...' if len(c.title) > 40 else c.title.strip()" />
                                                         </h5>
                                                         <div t-if="c.fund_need > 0">
                                                             <small class="fw-bold">
@@ -54,14 +54,16 @@
                                                                     % </div>
                                                             </div>
                                                         </div>
+                                                        <div t-if="c.description" class="mb-0">
+                                                            <t t-esc="c.description[:200].strip() + '...' if len(c.description) > 200 else c.description.strip()" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card-footer bg-white border-0">
+                                            <div class="card-footer bg-white border-0" style="height: 60px;">
                                                 <div class="row">
                                                     <div class="col text-end">
-                                                        <button class="btn btn-info w-100">View
-                                                            Details</button>
+                                                        <button class="btn btn-info w-100">View &amp; Donate</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -89,7 +91,7 @@
                 <div class="container mt-5">
                     <div class="row">
                         <!-- Left side box -->
-                        <div class="col-7 mx-5">
+                        <div class="col-12 col-md-7 col-lg-7">
                             <!-- Campaign title -->
                             <h4>
                                 <t t-esc="campaign.title" />
@@ -165,10 +167,10 @@
                                 </div>
                             </div>
 
-                            <hr />
+                            <!-- <hr /> -->
 
                             <!-- Social Icons -->
-                            <div class="row mb-4 justify-content-end">
+                            <!-- <div class="row mb-4 justify-content-end">
                                 <div class="col-auto">
                                     <i class="fa fa-facebook-official" aria-hidden="true"></i>
                                 </div>
@@ -181,10 +183,10 @@
                                 <div class="col-auto">
                                     <i class="fa fa-whatsapp" aria-hidden="true"></i>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Technical support -->
-                            <div class="mb-4">
+                            <!-- <div class="mb-4">
                                 <div class="card border box-theme-radius">
                                     <div class="card-body">
                                         <div class="row align-items-center">
@@ -197,15 +199,14 @@
                                                     this issue</a>
                                             </div>
                                         </div>
-                                        <!-- <h5><t t-esc="campaign.create_uuid" /></h5> -->
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- Right side box -->
-                        <div class="col">
-                            <div class="shadow-lg rounded p-4 fixed-content bg-white w-25">
+                        <div class="col-12 col-md-5 col-lg-5 mb-5">
+                            <div class="shadow-lg rounded p-4 bg-white">
                                 <div class="card border-0">
                                     <div class="card-body">
                                         <form id="donate_registration"
@@ -601,7 +602,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </t>

@@ -1,4 +1,8 @@
 let otpRes = { 'email': '', 'otp': '' };
+let existing_data = {};
+let expanded = false;
+let selectedVolunteerSkillIds = [];
+let selectedVolunteerSkillNames = [];
 
 $(function () {
     var options = {
@@ -157,20 +161,113 @@ function verifyOTP() {
                 // Filling existing infromation
                 if (otpRes.data) {
                     const o = otpRes.data;
-                    const fields = ['phone', 'gender', 'country_id', 'city', 'qualification', 'function', 'res_volunteer_type_id',
+                    existing_data = o;
+                    const fields = ['phone', 'gender', 'country_id', 'qualification', 'function', 'res_volunteer_type_id',
                         'comment', 'street', 'state_id', 'website', 'specialization', 'company_name', 'mobile']
 
                     fields.forEach((field, i) => {
                         if (o[field]) $(`[name=${field}]`).val(o[field]);
                     });
-                    // $('[name=res_volunteer_skill_ids]').val(o.res_volunteer_skill_ids);
+                    
+                    $('#contact_picture').attr('src', `/web/volunteer/get_profile_picture/${o.id}`)
+
+                    // <> Manage phone data
+                    if (o.phone) {
+                        const p_splitted = o.phone.split(' ');
+                        if (p_splitted.length === 3) {
+                            $('#phone_country_code').val(p_splitted[0].trim());
+                            $('[name=phone]').val(p_splitted[1].trim() + p_splitted[2].trim());
+                        }
+                    }
+                    // </>
+
+                    // <> Manage mobile data
+                    if (o.mobile) {
+                        const m_splitted = o.mobile.split(' ');
+                        if (m_splitted.length === 3) {
+                            $('#mobile_country_code').val(m_splitted[0].trim());
+                            $('[name=mobile]').val(m_splitted[1].trim() + m_splitted[2].trim());
+                        }
+                    }
+                    // </>
+
+                    if (o.res_volunteer_skill_ids) {
+                        o.res_volunteer_skill_ids.forEach((id, idx) => {
+                            $(`#check_${id}`).attr('checked', 'checked');
+                        });
+                        $('#default_option').html(o.volunteer_skill_names);
+
+                        selectedVolunteerSkillNames = o.volunteer_skill_names.split(',');
+                        selectedVolunteerSkillIds = o.res_volunteer_skill_ids;
+                        $('[name=res_volunteer_skill_ids]').val(selectedVolunteerSkillIds.join(','));
+                    }
+                    onSelectCountry();
                 }
                 $('.div_form').removeClass('d-none');
-            }, 1000);
-        }, 3000)
+            }, 500);
+        }, 1000)
     } else {
         alert('Invalid OTP');
     }
+}
+
+function showCheckboxes() {
+    var checkboxes = document.getElementsByClassName("checkboxes");
+    $.each(checkboxes, function (idx, check) {
+        if (check.style.display == "block") {
+            check.style.display = "none";
+            // check.style.display = "block";
+            // expanded = true;
+        } else {
+            check.style.display = "block";
+            // expanded = false;
+        }
+    });
+}
+
+function handleCheckboxChange(event) {
+    if (event.target.checked) {
+        selectedVolunteerSkillIds.push(Number(event.target.value));
+        selectedVolunteerSkillNames.push(event.target.attributes.data.value);
+    } else {
+        const idx = selectedVolunteerSkillIds.indexOf(event.target.value);
+        if (idx > -1) {
+            selectedVolunteerSkillIds.splice(idx, 1);
+            selectedVolunteerSkillNames.splice(idx, 1);
+        }
+    }
+    const html = selectedVolunteerSkillNames.length > 0 ? selectedVolunteerSkillNames.join(',') : '--Select Skills--';
+    $('#default_option').html(html);
+    $('[name=res_volunteer_skill_ids]').val(selectedVolunteerSkillIds.join(','));
+}
+
+function onSelectCountry(e) {
+    if (e && e.selectedOptions && e.selectedOptions.length > 0 && e.selectedOptions[0].attributes.data) {
+        if (e.selectedOptions[0].attributes.data.value == 'IN')
+            $('#state_id').removeClass('d-none');
+        else
+            $('#state_id').addClass('d-none');
+    }
+
+    let country_id = (e && e.value) ? e.value : $('#country_id').val();
+    $.ajax({
+        url: '/city/bycountry/' + country_id,
+        type: 'GET',
+        success: function (data) {
+            var $cityDropdown = $('#volunteer_form #city');
+            $cityDropdown.empty();
+
+            if (data && data.length > 0) {
+                $cityDropdown.append('<option value="">-- Select a city --</option>');
+                $.each(data, function (index, c) {
+                    $cityDropdown.append('<option value="' + c.city_name + '">' + c.city_name + '</option>');
+                });
+                $('#city').val(existing_data.city);
+            } else {
+                $cityDropdown.append('<option value="">No cities available</option>');
+            }
+        }
+    });
 }
 
 buildProgressingBar('progressing-indicator');

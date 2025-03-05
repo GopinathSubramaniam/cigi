@@ -10,11 +10,18 @@ from odoo.tools.misc import hmac as hmac_tool
 # Customized
 MERCHANTID = "SG892"
 CUSTOMERID = "hdfcmaster"
-SESSION_URL = 'https://smartgatewayuat.hdfcbank.com/session'
-ORDER_STATUS_URL = 'https://smartgatewayuat.hdfcbank.com/orders'
-PAYMENT_CALLBACK_URL = 'http://localhost:8069/event/order/success'
-# PAYMENT_CALLBACK_URL = 'https://testerp.cigi.org/event/order/success'
-HDFC_API_KEY = '104DEE413DD4012A1E35DF222AC7F6'
+# SESSION_URL = 'https://smartgatewayuat.hdfcbank.com/session' # Test
+# ORDER_STATUS_URL = 'https://smartgatewayuat.hdfcbank.com/orders' # Test
+
+SESSION_URL = 'https://smartgateway.hdfcbank.com/session'
+ORDER_STATUS_URL = 'https://smartgateway.hdfcbank.com/orders'
+
+# PAYMENT_CALLBACK_URL = 'http://localhost:8069/event/order/success' # Test
+PAYMENT_CALLBACK_URL = 'https://connect.cigi.org/event/order/success'
+
+
+# HDFC_API_KEY = '104DEE413DD4012A1E35DF222AC7F6' # Test
+HDFC_API_KEY = 'F9BBABBBEEB43A192F99F799D116D3'
 PAY_ORD_ID = 'PAY_ORD_ID'
 EVENT_ID = 'EVENT_ID'
 ATTENDEE_IDS = 'ATTENDEE_IDS'

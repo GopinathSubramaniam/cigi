@@ -92,3 +92,42 @@ hr:not([size]) {
 hr {
     color: var(--gray);
 }
+
+
+/* <> Multi select */
+.selectBox {
+    position: relative;
+}
+
+.selectBox select {
+    width: 100%;
+}
+
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.checkboxes {
+    display: none;
+    border: 1px #e7e7e7 solid;
+}
+
+.checkboxes label {
+    display: block;
+    padding-inline: 10px;
+    padding-bottom: 5px;
+}
+
+.checkboxes label input {
+    margin-right: 5px;
+}
+
+.checkboxes label:hover {
+    background-color: #e7e7e7;
+}
+
+/* </> Multi select */

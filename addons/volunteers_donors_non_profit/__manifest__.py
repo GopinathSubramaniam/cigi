@@ -34,6 +34,7 @@ Allow you to share tasks to volunteer on the portal of your website (Odoo standa
     'images': ['static/description/img.png'],
     'live_test_url' : 'https://probuseappdemo.com/probuse_apps/volunteers_donors_non_profit/183',#'https://youtu.be/t9Ec8V03r2A',
     'depends': [
+        'web',
         'crm',
         'print_project_report',
     ],

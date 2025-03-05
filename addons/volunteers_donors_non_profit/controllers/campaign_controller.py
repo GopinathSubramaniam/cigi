@@ -20,6 +20,7 @@ class CampaignController(http.Controller):
     def detail(self, campaign_id, **kwargs): 
         # kwargs['id']
         campaign = request.env['volunteer.campaign'].browse(campaign_id);
+        print('2nd Image = ', campaign.second_image)
         return request.render('volunteers_donors_non_profit.website_campaign_detail', {"campaign": campaign})
     
     # This method will be triggered when the "Donate" button is clicked
@@ -35,7 +36,10 @@ class CampaignController(http.Controller):
             mobile = kwargs['mobile']
             
             # Country of residence
-            country_of_residence = request.env['res.country'].sudo().browse(int(kwargs['country_of_residence']))
+            country_of_residence_name = 'Unknown'
+            if kwargs['country_of_residence']:
+                country_of_residence = request.env['res.country'].sudo().browse(int(kwargs['country_of_residence']))
+                country_of_residence_name = country_of_residence.name
             
             # PAN Number
             id_number = kwargs['id_number']
@@ -52,7 +56,10 @@ class CampaignController(http.Controller):
                 tag = request.env['res.partner.category'].create({
                     'name': 'Donor'
                 })
-
+            
+            print('================id_number ========== ', id_number)
+            print('================ country_of_residence_name ========== ', country_of_residence_name)
+            
             # <> Create a new contact If the contact is not exists
             existing_cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
             print('Comment = ', existing_cont.comment)
@@ -66,7 +73,7 @@ class CampaignController(http.Controller):
                     "country_id": country.id,
                     "state_id": state_id,
                     "street": street,
-                    "comment": ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence.name, 'PAN', id_number)),
+                    "comment": ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence_name, 'PAN', id_number)),
                     "active": True,
                     "is_donors": True,
                     'company_id': 1, # Default company id
@@ -74,7 +81,7 @@ class CampaignController(http.Controller):
                 }
                 existing_cont = request.env["res.partner"].sudo().create(contact);
             elif not existing_cont.comment:
-                existing_cont.write({'comment': ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence.name, 'PAN', id_number))})
+                existing_cont.write({'comment': ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence_name, 'PAN', id_number))})
             # </>
 
             # 2024100409_23_2
@@ -83,8 +90,10 @@ class CampaignController(http.Controller):
             # order_id, name, amount, email, phone, desc, callback_url
             callbackurl = payment_utils.get_payment_donation_callback()+order_id
             payment_url = request.env['payment.method']._redirect_to_payment_page(order_id, name, amount, email, mobile, 'Donation', callbackurl)
+            print('Payment URL = ', payment_url)
             return redirect(payment_url)
         except Exception as e:
+           print(e)
            raise UserError(f"Something went wrong. Please try again later")
     
     @http.route(['/campaign/payment/success/<string:return_val>'], type="http", auth="public", website=True, sitemap=False, csrf=False)

@@ -1,16 +1,21 @@
 
+import base64
 import json
-from odoo import http
-from odoo.http import request
 import random
 import traceback
+
+from odoo import http
+from odoo.http import Response, request
+
 
 class VolunteerController(http.Controller):
 
     @http.route('/web/volunteer/form', type="http", auth="public", website=True)
     def volunteer_form(self, **kwargs):
+        qual = request.env["hr.skill.type"].sudo().search([('name', '=', 'Qualification')], limit=1)
+        qualifications = request.env["hr.skill"].sudo().search([('skill_type_id', '=', qual.id)])
 
-        return request.render('volunteers_donors_non_profit.volunteer_form', {'title': 'Volunteer Form'})
+        return request.render('volunteers_donors_non_profit.volunteer_form', {'qualifications': qualifications})
     
     @http.route('/web/volunteer/send_otp', type="http", auth="public", website=True, methods=['POST'], csrf=False)
     def send_otp(self, **kwargs):
@@ -33,8 +38,13 @@ class VolunteerController(http.Controller):
 
         res = {'email': email, 'otp': otp}
         cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
-        cont_data = cont.read(['id', 'name', 'gender', 'email', 'phone', 'mobile', 'street', 'city', 'state_id', 'country_id', 'comment', 'company_name', 'qualification', 'specialization', 'website', 'function', 'res_volunteer_type_id'])
-        res['data'] = cont_data[0] if cont_data else ''
+        cont_data = cont.read(['id', 'name', 'gender', 'email', 'phone', 'mobile', 'street', 'city', 'state_id', 'country_id', 'comment', 'company_name', 'qualification', 'specialization', 'website', 'function', 'res_volunteer_type_id', 'res_volunteer_skill_ids'])
+        data = cont_data[0] if cont_data else None
+        if data is not None:
+            skills = request.env["volunteer.skills"].sudo().search([('id', 'in', data['res_volunteer_skill_ids'])])
+            skill_names = [s.name for s in skills]
+            data['volunteer_skill_names'] = ','.join(skill_names)
+            res['data'] = data
 
         return request.make_response(json.dumps(res), headers=[('Content-Type', 'application/json')])
     
@@ -51,11 +61,14 @@ class VolunteerController(http.Controller):
                     tag = request.env['res.partner.category'].create({
                         'name': 'Volunteer'
                     })
+                tag_ids = [tag.id]
 
                 name = kwargs['name']
                 gender = kwargs['gender']
-                mobile = kwargs['mobile']
-                phone = kwargs['phone']
+                mobile_country_code = kwargs['mobile_country_code']
+                mobile = ('%s %s' % (mobile_country_code, kwargs['mobile']))
+                phone_country_code = kwargs['phone_country_code']
+                phone = ('%s %s' % (phone_country_code, kwargs['phone']))
                 street = kwargs['street']
                 state_id = kwargs['state_id']
                 city = kwargs['city']
@@ -67,10 +80,10 @@ class VolunteerController(http.Controller):
                 website = kwargs['website']
                 function = kwargs['function']
                 res_volunteer_type_id = kwargs['res_volunteer_type_id']
-                res_volunteer_skill_ids = kwargs.get('res_volunteer_skill_ids', [])
-                if isinstance(res_volunteer_skill_ids, str):
-                    res_volunteer_skill_ids = [res_volunteer_skill_ids]
-
+                res_volunteer_skill_ids_str = kwargs.get('res_volunteer_skill_ids')
+                res_volunteer_skill_ids = list(map(int, res_volunteer_skill_ids_str.split(',')))
+                contact_picture = kwargs.get('contact_picture')
+                
                 contact = {
                             "name": name,
                             "complete_name": name,
@@ -91,19 +104,35 @@ class VolunteerController(http.Controller):
                             "is_volunteer": True,
                             "res_volunteer_type_id": int(res_volunteer_type_id),
                             "res_volunteer_skill_ids": res_volunteer_skill_ids,
-                            "category_id": [(6, 0, [tag.id])] 
+                            "category_id": [(6, 0, tag_ids)] 
                         }
                 cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
                 
-                print('>>>>>>>>>> res_volunteer_skill_ids >>>>>>>>>>>>>')
-                print(res_volunteer_skill_ids)
-                
+                # <> Profile pic upload
+                base64_data = None
+                if contact_picture:
+                    image_data = contact_picture.read()
+                    base64_data = base64.b64encode(image_data)
+                # </>
+
                 if not cont:
                     contact['active'] = True
                     contact['company_id'] = 1
+                    if base64_data is not None:
+                        contact['image_1920'] = base64_data
+
                     request.env["res.partner"].sudo().create(contact)
                     res = {'success_msg': 'Registered Successfully'}
                 else:
+                    contact_tags = cont.category_id
+                    for t in contact_tags:
+                        tag_ids.append(t.id)
+                    
+                    cont['category_id'] = [(6, 0, tag_ids)] 
+
+                    if base64_data is not None:
+                        cont['image_1920'] = base64_data
+
                     cont.write(contact)
                     res = {'success_msg': 'Updated Successfully'}
         
@@ -114,4 +143,23 @@ class VolunteerController(http.Controller):
         
         return request.render('volunteers_donors_non_profit.volunteer_form', res)
     
+    @http.route('/web/volunteer/get_profile_picture/<int:partner_id>', type="http", auth="public", website=True, methods=['GET'])
+    def get_profile_picture(self, partner_id, **kwargs):
+        # Fetch the partner record using the partner_id
+        partner = request.env['res.partner'].sudo().browse(partner_id)
+
+        if partner.exists():
+            # Get the profile picture from the partner's image_1920 field
+            image_data = partner.image_1920
+            if image_data:
+                # Return the image as a response with the correct MIME type
+                return Response(
+                    base64.b64decode(image_data),
+                    content_type='image/png',  # Adjust MIME type if it's JPEG, etc.
+                    status=200
+                )
+            else:
+                return Response("No image available", status=404)
+        else:
+            return Response("Partner not found", status=404)
     

@@ -107,7 +107,11 @@ class CustomEventController(http.Controller):
             callback_url = payment_utils.PAYMENT_CALLBACK_URL+return_id
             print('Callback URL = ',callback_url)
             order_amount = (event_ticket.price * len(attendees_sudo))
-            discount_amount = event_event.get_discount_amount(coupon_code, order_amount)
+            
+            discount_amount = 0
+            if coupon_code is not None and coupon_code != "":
+                discount_amount = event_event.get_discount_amount(coupon_code, order_amount)
+            
             print('Phone = ', ('' if (attendee.phone is None or attendee.phone is False) else attendee.phone))
             print('Discount Amount = ', discount_amount)
             print('Order Amount = ', order_amount)
