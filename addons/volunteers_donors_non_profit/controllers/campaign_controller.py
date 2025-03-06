@@ -85,7 +85,7 @@ class CampaignController(http.Controller):
             # </>
 
             # 2024100409_23_2
-            order_id = ('%s_%s_%s' % (datetime.now().strftime('%Y%m%d%H'), existing_cont.id, campaign_id))
+            order_id = ('%s_%s_%s' % (datetime.now().strftime('%Y%m%d%H%M'), existing_cont.id, campaign_id))
 
             # order_id, name, amount, email, phone, desc, callback_url
             callbackurl = payment_utils.get_payment_donation_callback()+order_id
