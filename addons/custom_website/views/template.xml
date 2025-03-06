@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="custom_footer" inherit_id="website.layout">
+        <!-- //div[contains(@class, 'o_brand_promotion')] -->
+        <!-- <xpath expr="//footer//div[hasclass('o_brand_promotion')]" position="replace">
+           <p t-esc="'Powered by Sygmetiv'"/>
+        </xpath> -->
+
+        <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">
+           <div class="o_footer_copyright o_colored_level o_cc" data-name="Copyright">
+                <div class="container py-3">
+                    <div class="row">
+                        <div class="col-sm text-center text-muted">
+                            <span class="o_footer_copyright_name me-2" data-oe-id="2800" data-oe-xpath="/data/xpath/span" 
+                                data-oe-model="ir.ui.view" data-oe-field="arch">Copyright © CIGI</span>
+                        </div>
+                        <div class="col-sm text-center text-muted">
+                            <span class="o_footer_copyright_name me-2" data-oe-id="2800" data-oe-xpath="/data/xpath/span" 
+                                data-oe-model="ir.ui.view" data-oe-field="arch">Powered by <a href="https://sygmetiv.com" target="_blank">Sygmetiv</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
