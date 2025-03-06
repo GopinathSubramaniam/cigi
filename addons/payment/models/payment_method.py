@@ -349,7 +349,7 @@ class PaymentMethod(models.Model):
         print('Email = ', invoice.partner_id.email)
         mail_template = """Hello,<br/><br/>
                             Thank you for registering the event. Kindly find the attached receipt for your payment. <br/><br/>
-                            This system is generated receipt and no signature is required.<br/><br/>
+                            This is system generated receipt and no signature is required.<br/><br/>
                             For any discrepancy in online payment, we will contact you in 7 working days.<br/><br/>
                             Best Regards,<br/>
                             Team CIGI
