@@ -378,9 +378,8 @@
                             <div class="mb-3">
                                 <label class="form-label">Volunteer Type</label>
                                 <select name="res_volunteer_type_id" id="res_volunteer_type_id"
-                                    class="form-control form-control-sm border-0 border-bottom"
-                                    required="1">
-                                    <option value="">-- Select Volunteer Type --</option>
+                                    class="form-control form-control-sm border-0 border-bottom" disabled="disabled">
+                                    <option value="">Select Volunteer Type</option>
                                     <t t-foreach="request.env['volunteer.type'].sudo().search([])"
                                         t-as="t">
                                         <option t-att-value="t.id">

@@ -37,6 +37,22 @@ class VolunteerCampaignPayment(models.Model):
 
     invoice_num = fields.Char(compute='get_invoice_num', string='Payment Number', store=False)
 
+    payment_ref_num = fields.Char(string='HDFC Ref', compute='get_payment_info', store=False)
+    pan_num = fields.Char(string='PAN', store=False)
+
     def get_invoice_num(self):
         for rec in self:
             rec.invoice_num = rec.cust_payment_id.move_id.name
+
+    def get_payment_info(self):
+        for rec in self:
+            splitted = rec.cust_payment_id.move_id.ref.split(',')
+            for val in splitted:
+                key = val.split(':')[0] # Getting key from the string
+                if 'Payment Ref' in key:
+                    rec.payment_ref_num = val.split(':')[1].strip()  # Getting payment ref number from the string
+                
+                if 'PAN' in key:
+                    rec.pan_num = val.split(':')[1].strip()# Getting PAN number from the string
+
+    

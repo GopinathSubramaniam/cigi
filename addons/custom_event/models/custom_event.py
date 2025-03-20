@@ -3,6 +3,8 @@ from odoo import models, fields, api
 class CustomEvent(models.Model):
     _inherit = 'event.event'
 
+    tag_ids = fields.Many2many('event.tag', string="Tags", readonly=False, required=True)
+
     def download_attendees_excel(self):
         event_id = self.id
         print('Event Id = ', event_id)

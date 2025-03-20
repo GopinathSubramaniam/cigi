@@ -79,7 +79,7 @@ class VolunteerController(http.Controller):
                 specialization = kwargs['specialization']
                 website = kwargs['website']
                 function = kwargs['function']
-                res_volunteer_type_id = kwargs['res_volunteer_type_id']
+                # res_volunteer_type_id = kwargs['res_volunteer_type_id']
                 res_volunteer_skill_ids_str = kwargs.get('res_volunteer_skill_ids')
                 res_volunteer_skill_ids = list(map(int, res_volunteer_skill_ids_str.split(',')))
                 contact_picture = kwargs.get('contact_picture')
@@ -102,7 +102,7 @@ class VolunteerController(http.Controller):
                             "specialization": specialization,
                             "website": website,
                             "is_volunteer": True,
-                            "res_volunteer_type_id": int(res_volunteer_type_id),
+                            # "res_volunteer_type_id": int(res_volunteer_type_id),
                             "res_volunteer_skill_ids": res_volunteer_skill_ids,
                             "category_id": [(6, 0, tag_ids)] 
                         }

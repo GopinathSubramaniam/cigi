@@ -16,7 +16,7 @@ ORDER_STATUS_URL = 'https://smartgatewayuat.hdfcbank.com/orders' # Test
 # SESSION_URL = 'https://smartgateway.hdfcbank.com/session'
 # ORDER_STATUS_URL = 'https://smartgateway.hdfcbank.com/orders'
 
-PAYMENT_CALLBACK_URL = 'http://localhost:8069/event/order/success' # Test
+PAYMENT_CALLBACK_URL = 'https://testerp.cigi.org/event/order/success' # Test
 # PAYMENT_CALLBACK_URL = 'https://connect.cigi.org/event/order/success'
 
 

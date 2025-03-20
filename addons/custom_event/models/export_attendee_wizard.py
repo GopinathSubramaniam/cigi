@@ -24,7 +24,7 @@ class ExportAttendeeWizard(models.TransientModel):
         question_titles = [q['title'] for q in question_objs]
         
         # Preparing the headers
-        headers = ['Created On', 'Registered User', 'Registered Email', 'Registered Phone', 'Event']
+        headers = ['Created On', 'Registered User', 'Registered Email', 'Registered Phone', 'Event', 'Sales Status']
         for q in question_titles:
             headers.append(('Attendee %s' % q))
 
@@ -46,12 +46,21 @@ class ExportAttendeeWizard(models.TransientModel):
             worksheet.write(row, 2, attendee.email)
             worksheet.write(row, 3, attendee.phone)
             worksheet.write(row, 4, attendee.event_id.name)
+            worksheet.write(row, 5, attendee.sale_status)
+            print('attendee.sale_status = ', attendee.sale_status);
 
             # <> Adding the event registration answers
-            idx = 5
+            idx = 6
             answers = self.env['event.registration.answer'].search([('registration_id', '=', attendee.id)])
             for a in answers:
-                worksheet.write(row, idx, a.value_text_box  or '')
+                print('Answer Object = ', idx, 'Value = ', a);
+                print('Answer = ', a.value_answer_id.name);
+
+                val = a.value_text_box 
+                if a.value_answer_id.name:
+                    val = a.value_answer_id.name
+
+                worksheet.write(row, idx, val or '')
                 idx += 1
             # </>
             row += 1

@@ -53,7 +53,7 @@
     <!-- </> Campaign CRUD operations -->
 
     <!-- <> Custom campaign form - Working on it -->
-    <record model="ir.ui.view" id="hr_recruitment_ext_form">
+    <record model="ir.ui.view" id="volunteer_campaign_custom_form">
         <field name="name">volunteer.campaign.custom.form.view</field>
         <field name="model">volunteer.campaign</field>
         <field name="type">form</field>
@@ -90,6 +90,8 @@
                                     <field name="user_email" />
                                     <field name="user_mobile" />
                                     <field name="invoice_num" />
+                                    <field name="payment_ref_num" />
+                                    <field name="pan_num" />
                                     <field name="amount" widget="monetary"
                                         options="{'currency_field': 'currency_id'}" />
                                 </tree>
