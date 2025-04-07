@@ -33,14 +33,18 @@ class EventRegistration(models.Model):
             cancelled_so_registrations.state = 'cancel'
             cancelled_registrations = cancelled_so_registrations | registrations.filtered(lambda reg: reg.state == 'cancel')
             # if not so_line or float_is_zero(so_line.price_total, precision_digits=so_line.currency_id.rounding):
-            
-            if(len(registrations) > 0 and registrations[0].event_ticket_id.price):
+            print('--------------------_compute_registration_status---------------------------')
+            # print('============  registrations.sale_status ',  registrations.sale_status)
+            if(len(registrations) > 0 and registrations[0].event_ticket_id.price and registrations[0].sale_status == False):
+                print('--------------------_compute_registration_status 1---------------------------')
                 registrations.sale_status = 'to_pay'
                 registrations.filtered(lambda reg: reg.state == 'draft').write({"state": "open"})
             elif not so_line or float_is_zero(so_line.price_total, precision_digits=so_line.currency_id.rounding):
+                print('--------------------_compute_registration_status 2---------------------------')
                 registrations.sale_status = 'free'
                 registrations.filtered(lambda reg: reg.state == 'draft').write({"state": "open"})
             else:
+                print('--------------------_compute_registration_status 3---------------------------')
                 sold_registrations = registrations.filtered(lambda reg: reg.sale_order_id.state == 'sale') - cancelled_registrations
                 sold_registrations.sale_status = 'sold'
                 (registrations - sold_registrations).sale_status = 'to_pay'
@@ -138,6 +142,7 @@ class EventRegistration(models.Model):
 
     def _get_registration_summary(self):
         res = super(EventRegistration, self)._get_registration_summary()
+        print("_get_registration_summary ::::::::::::::::::::::::::::::::::: ", res)
         res.update({
             'sale_status': self.sale_status,
             'sale_status_value': dict(self._fields['sale_status']._description_selection(self.env))[self.sale_status],

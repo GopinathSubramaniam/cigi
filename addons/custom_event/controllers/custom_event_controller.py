@@ -54,9 +54,11 @@ class CustomEventController(http.Controller):
                 }
 
         print('Tickets Count = ', tickets[0]['quantity'])
+        ticket_per_price = event.event_ticket_ids[0].price if (event.event_ticket_ids and event.event_ticket_ids[0]) else 0.00
+        total_amount = round((ticket_per_price * int(tickets[0]['quantity'])), 2)
         return request.render('custom_event.event_custom_registration_template', {
             'total_tickets': len(tickets),
-            'total_amount': round((event.event_ticket_ids[0].price * int(tickets[0]['quantity'])), 2),
+            'total_amount': total_amount,
             'tickets': tickets,
             'event': event,
             'availability_check': availability_check,
@@ -157,7 +159,7 @@ class CustomEventController(http.Controller):
         # Create invoice only if the invoice is not created already
         if len(existing_invoices) == 0:
             attendees_ids = session_vals[1]
-            att_ids = [attendees_id for attendees_id in attendees_ids.split('-')]
+            att_ids = [int(attendees_id) for attendees_id in attendees_ids.split('-')]
             event_id = int(session_vals[2])
             contact_id = int(session_vals[3])
             visitor_id = int(session_vals[4])
@@ -213,6 +215,7 @@ class CustomEventController(http.Controller):
                 # <> Update event registrations with sale_order_id and sale_order_line_id
                 order_line = request.env['sale.order.line'].search([('order_id', '=', so.id)], limit=1)
                 request.env['event.registration'].search([('id', 'in', att_ids)]).update({'sale_order_id': so.id, 'sale_status': 'sold', 'sale_order_line_id': order_line.id})
+                
                 so.action_confirm() # Confirm SO
 
                 request.env['payment.method']._create_invoice_after_payment(so, so.order_line) # Create invoice
