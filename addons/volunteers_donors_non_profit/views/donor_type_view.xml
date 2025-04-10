@@ -59,6 +59,9 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Campaign">
+                <header>
+                    <button string="Export Donations" class="btn-primary" name="download_donations_excel" type="object" context="{'state': 'new'}"/>
+                </header>
                 <sheet>
                     <group>
                         <group>

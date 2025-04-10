@@ -155,3 +155,16 @@ class CampaignController(http.Controller):
             state_list = [{'id': state.id, 'name': state.name} for state in states]
             return request.make_response(json.dumps({'states': state_list}), headers=[('Content-Type', 'application/json')])
         return request.make_response(json.dumps({'states': []}), headers=[('Content-Type', 'application/json')])
+    
+
+    @http.route(['/campaign/download/donations/<int:campaign_id>'], type="http", auth="public", website=True, sitemap=False)
+    def list(self, campaign_id, **kwargs): 
+        excel_file = request.env['export.donation.wizard'].export_donations(campaign_id)
+        return request.make_response(
+            excel_file,
+            headers=[
+                ('Content-Type', 'application/vnd.ms-excel'),
+                ('Content-Disposition', f'attachment; filename="donations_list.xlsx"')
+            ]
+        )
+    

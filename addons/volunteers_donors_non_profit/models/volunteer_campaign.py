@@ -1,6 +1,9 @@
 from odoo import models, fields, api
 import math
 from datetime import datetime
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class Campaign(models.Model):
     _name = 'volunteer.campaign'
@@ -96,6 +99,15 @@ class Campaign(models.Model):
         compute = '_is_expired'
     )
 
+    def download_donations_excel(self):
+        campaign_id = self.id
+        _logger.info(f'Campaign Id = {campaign_id}')
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/campaign/download/donations/{self.id}',
+            'target': 'new',
+        }
+    
     def _fund_received(self):
         self.fund_received = 0.00
         for c in self:

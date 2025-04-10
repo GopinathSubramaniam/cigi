@@ -10,6 +10,7 @@ from . import volunteer_working_detail
 from . import volunteer_campaign
 from . import volunteer_campaign_payment
 from . import account_payment
+from . import export_donation_wizard
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
