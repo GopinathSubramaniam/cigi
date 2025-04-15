@@ -158,7 +158,7 @@ class CampaignController(http.Controller):
     
 
     @http.route(['/campaign/download/donations/<int:campaign_id>'], type="http", auth="public", website=True, sitemap=False)
-    def list(self, campaign_id, **kwargs): 
+    def download_donations(self, campaign_id, **kwargs): 
         excel_file = request.env['export.donation.wizard'].export_donations(campaign_id)
         return request.make_response(
             excel_file,
