@@ -36,7 +36,7 @@ class VolunteerController(http.Controller):
             'subject': 'Volunteer Email Verification OTP',
             'body_html': body_html,
             'email_to': email,
-            'email_from': 'erp@cigi.org',
+            'email_from': 'CIGI<cigicrm@cigi.org>',
             'email_cc': False,
             'auto_delete': True,
         }

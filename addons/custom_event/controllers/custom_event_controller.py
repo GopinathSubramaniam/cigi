@@ -127,7 +127,7 @@ class CustomEventController(http.Controller):
                     'action': "paymentPage",
                     'currency': "INR",
                     'return_url': callback_url,
-                    'description': 'Event Registration',
+                    'description': ('Event: ' % event_ticket.name),
                     'first_name': attendee.name,
                     'last_name': ''
                 }

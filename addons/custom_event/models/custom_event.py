@@ -60,7 +60,7 @@ class CustomEvent(models.Model):
     def get_discount_amount(self, promo_code, amount_total):
         loyalty_rule = self.env['loyalty.rule'].sudo().search([('code', '=', promo_code),('active', '=', True)], limit=1)
         discount_amount = 0.00
-        if amount_total > loyalty_rule.minimum_amount:
+        if amount_total >= loyalty_rule.minimum_amount:
             loyalty_reward = self.env['loyalty.reward'].sudo().search([('program_id', '=', loyalty_rule.program_id.id)], limit=1)
             if loyalty_reward.discount_mode == 'percent':
                 discount_amount = (amount_total * loyalty_reward.discount / 100)
