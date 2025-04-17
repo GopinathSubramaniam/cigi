@@ -97,6 +97,7 @@
                                     <field name="pan_num" />
                                     <field name="amount" widget="monetary"
                                         options="{'currency_field': 'currency_id'}" />
+                                    <field name="notes" />
                                 </tree>
                             </field>
                         </page>
@@ -168,7 +169,6 @@
     </record>
     <!-- </> Custom Campaign Kanban View -->
 
-
     <menuitem id="menu_parent_menu" name="Volunteers and Donors"
         web_icon="volunteers_donors_non_profit,static/description/web_icon.png" />
     <menuitem id="menu_add_sub_menu" name="Configuration" parent="menu_parent_menu" sequence="4" />
@@ -184,5 +184,5 @@
     <menuitem id="menu_donor_add_menu" name="Donors" parent="menu_parent_menu" sequence="2"
         action="custom_action_donors_add" />
     <menuitem id="menu_donor_campaigns" name="Campaigns" parent="menu_parent_menu" sequence="3"
-        action="action_custom_campaign" />
+        action="action_custom_campaign" /> 
 </odoo>

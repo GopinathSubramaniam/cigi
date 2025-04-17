@@ -22,6 +22,11 @@
                             <field name="res_volunteer_type_id"/>
                             <field name="res_volunteer_skill_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                         </group>
+                       <group>
+                            <field name="qualification"/>
+                            <field name="gender"/>
+                            <field name="specialization"/>
+                        </group>
                     </group>
                 </page>
               <!--   <page string="Donor Details" attrs="{'invisible': [('is_donors', '!=', True)]}"> -->
@@ -44,6 +49,22 @@
             </div>
         </field>
     </record>
+    <!-- Add new fields in the Tree View for Volunteers -->
+   <record id="view_partner_tree_inherit_volunteer" model="ir.ui.view">
+        <field name="name">res.partner.tree.inherit.volunteer</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="qualification" optional="show"/>
+                <field name="specialization" optional="show"/>
+                <field name="gender" optional="show"/>
+                <field name="res_volunteer_type_id" optional="show"/>
+                <field name="res_volunteer_skill_ids" widget="many2many_tags" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
      <record id="custom_action_volunteer_add" model="ir.actions.act_window">
         <field name="name">Volunteers</field>
         <field name="type">ir.actions.act_window</field>
@@ -51,7 +72,8 @@
         <field name="view_mode">kanban,tree,form,activity</field>
         <field name="domain">[('is_volunteer', '=', True)]</field>
         <field name="context">{"default_is_volunteer":1}</field>
-        </record>
+    </record>
+
     <record id="custom_action_donors_add" model="ir.actions.act_window">
         <field name="name">Donors</field>
         <field name="type">ir.actions.act_window</field>

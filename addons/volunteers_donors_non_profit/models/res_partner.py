@@ -20,7 +20,7 @@ class ResPartner(models.Model):
     )
     res_volunteer_type_id = fields.Many2one(
         'volunteer.type', 
-        string="Volunteer Type",
+        string="Resource Type",
         copy=True
     )
     res_donor_type_id = fields.Many2one(
@@ -30,14 +30,24 @@ class ResPartner(models.Model):
     )
     res_volunteer_skill_ids = fields.Many2many(
         'volunteer.skills',
-        string='Volunteer Skills',
+        string='Resource Skills',
         copy=True
     )
 
     # <> New Fields
-    gender = fields.Text(string="Gender", copy=True)
-    qualification = fields.Text(string="Highest Qualification", copy=True)
-    specialization = fields.Text(string="Education Specialization", copy=True)
+    gender = fields.Selection([
+    ('Male', 'Male'),
+    ('Female', 'Female'),
+    ('Other', 'Other')
+    ], string="Gender", copy=True)
+
+    qualification = fields.Char(string="Highest Qualification", copy=True)
+    specialization = fields.Char(string="Specialization", copy=True)
+
+    mobile_country_code = fields.Char(string="Specialization", copy=True)
+    phone_country_code = fields.Char(string="Specialization", copy=True)
+    
+
     # </>
 
     def action_custom_campaign(self):

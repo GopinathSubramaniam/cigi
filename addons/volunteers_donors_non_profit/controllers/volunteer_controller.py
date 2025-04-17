@@ -2,17 +2,22 @@
 import base64
 import json
 import random
+import re
 import traceback
 
 from odoo import http
 from odoo.http import Response, request
+from odoo.tools import html2plaintext
+
+def is_valid_email(email):
+    return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
 
 class VolunteerController(http.Controller):
 
-    @http.route('/web/volunteer/form', type="http", auth="public", website=True)
+    @http.route('/web/volunteer/form', type="http", auth="public", website=True) 
     def volunteer_form(self, **kwargs):
-        qual = request.env["hr.skill.type"].sudo().search([('name', '=', 'Qualification')], limit=1)
+        qual = request.env["hr.skill.type"].sudo().search([('name', '=', 'qualification')], limit=1)
         qualifications = request.env["hr.skill"].sudo().search([('skill_type_id', '=', qual.id)])
 
         return request.render('volunteers_donors_non_profit.volunteer_form', {'qualifications': qualifications})
@@ -21,8 +26,10 @@ class VolunteerController(http.Controller):
     def send_otp(self, **kwargs):
         json_data = json.loads(request.httprequest.data)
         email = json_data.get('email')
-        print('Sending OTP to ', email)
+        if not email or not is_valid_email(email):
+            return request.make_response(json.dumps({'error': 'Invalid email format'}), headers=[('Content-Type','application/json')])
 
+        print('Sending OTP to ', email)
         otp = random.randint(100000, 999999)
         body_html = ('Dear Volunteer,<br/><br/>OTP for your volunteer email verification is %s.<br/><br/>This OTP will expire after 4hrs. <br/><br/>Thank you.' % (otp))
         mail_values = {
@@ -73,7 +80,7 @@ class VolunteerController(http.Controller):
                 state_id = kwargs['state_id']
                 city = kwargs['city']
                 country_id = kwargs['country_id']
-                comment = kwargs['comment']
+                comment = html2plaintext(kwargs.get('comment',''))
                 company_name = kwargs['company_name']
                 qualification = kwargs['qualification']
                 specialization = kwargs['specialization']
@@ -91,6 +98,7 @@ class VolunteerController(http.Controller):
                             "gender": gender,
                             "email": email,
                             "phone": phone,
+                            "mobile_country_code": mobile_country_code,
                             "mobile": mobile,
                             "city": city,
                             "country_id": int(country_id),
@@ -134,7 +142,11 @@ class VolunteerController(http.Controller):
                         cont['image_1920'] = base64_data
 
                     cont.write(contact)
-                    res = {'success_msg': 'Updated Successfully'}
+
+                    base_url = request.env['ir.config_parameter'].get_param('web.base.url')
+                    
+                    res = {'success_msg': 'Updated Successfully', 'redirect_url': f'{base_url}/web/volunteer/form' }
+                    return request.render('volunteers_donors_non_profit.volunteer_form', res)
         
         except Exception as e:
             print('Error;', e)

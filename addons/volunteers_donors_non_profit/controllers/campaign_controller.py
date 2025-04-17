@@ -34,6 +34,11 @@ class CampaignController(http.Controller):
             name = kwargs['name']
             email = kwargs['email']
             mobile = kwargs['mobile']
+            notes = kwargs.get('notes')
+            
+            # Dontation - Notes
+            request.session['donation_note'] = notes
+           
             
             # Country of residence
             country_of_residence_name = 'Unknown'
@@ -56,7 +61,7 @@ class CampaignController(http.Controller):
                 tag = request.env['res.partner.category'].create({
                     'name': 'Donor'
                 })
-            
+
             print('================id_number ========== ', id_number)
             print('================ country_of_residence_name ========== ', country_of_residence_name)
             
@@ -77,7 +82,7 @@ class CampaignController(http.Controller):
                     "active": True,
                     "is_donors": True,
                     'company_id': 1, # Default company id
-                    'category_id': [(6, 0, [tag.id])] 
+                    'category_id': [(6, 0, [tag.id])] ,
                 }
                 existing_cont = request.env["res.partner"].sudo().create(contact);
             elif not existing_cont.comment:
@@ -113,6 +118,7 @@ class CampaignController(http.Controller):
                 
                 contact = request.env['res.partner'].browse(int(contact_id))
                 paid_amount = jsonres['amount']
+                notes = request.session.get('donation_note', '')
 
                 # Create bill for the contact_id. We will share this bill as a receipt with donor
                 today = date.today().strftime('%Y-%m-%d')
@@ -125,12 +131,13 @@ class CampaignController(http.Controller):
                     'volunteer_campaign_id':campaign_id,
                     'amount': paid_amount,
                     'cust_payment_id': cust_payment.id,
+                    'notes': notes,
                 }
                 campaign_payment_model = request.env['volunteer.campaign.payment']
                 campaign_payment_model.create(campaign_payment_data)
                 
                 # </>
-
+                request.session.pop('donation_note', None)
                 return request.render('volunteers_donors_non_profit.website_campaign_donation_success', {})
             else:
                 return request.render("website_event.payment_failed")
@@ -155,8 +162,8 @@ class CampaignController(http.Controller):
             state_list = [{'id': state.id, 'name': state.name} for state in states]
             return request.make_response(json.dumps({'states': state_list}), headers=[('Content-Type', 'application/json')])
         return request.make_response(json.dumps({'states': []}), headers=[('Content-Type', 'application/json')])
-    
 
+    
     @http.route(['/campaign/download/donations/<int:campaign_id>'], type="http", auth="public", website=True, sitemap=False)
     def download_donations(self, campaign_id, **kwargs): 
         excel_file = request.env['export.donation.wizard'].export_donations(campaign_id)

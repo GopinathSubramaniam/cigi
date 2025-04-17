@@ -122,12 +122,30 @@ function getStates(ev) {
     });
 }
 
+function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+function stripHTML(input) {
+    return input.replace(/<\/?[^>]+(>|$)/g, "");
+}
+
 function sendOTP(ev) {
     console.log('called');
     $('#send_otp_btn').attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> &nbsp; Send OTP')
 
     const email = $('#email').val();
-    if (email) {
+    if (!isValidEmail(email)) {
+        $('#email').addClass('is-invalid');
+        alert('Please enter a valid email address.');
+        location.reload();
+        $('#sent_otp_btn').attr('disabled', false).html('Sent OTP');
+        return;
+    }else {
+        $('#email').removeClass('is-invalid');
+
+    }
         $.ajax({
             url: '/web/volunteer/send_otp',
             type: 'POST',
@@ -139,14 +157,15 @@ function sendOTP(ev) {
                     $('#send_otp_btn').attr('disabled', false).html('Send OTP')
                     $('#send_otp_form').addClass('d-none');
                     $('#verify_otp_form').removeClass('d-none');
+                } else if (data.error) {
+                    alert(data.error);
+                    $('#send_otp_btn').attr('disabled', false).html('Send OTP');
                 } else {
                     console.log('Failed to send OTP');
                 }
             }
         });
     }
-
-}
 
 function verifyOTP() {
     const email = $('#email').val();
@@ -165,9 +184,13 @@ function verifyOTP() {
                     const fields = ['phone', 'gender', 'country_id', 'qualification', 'function', 'res_volunteer_type_id',
                         'comment', 'street', 'state_id', 'website', 'specialization', 'company_name', 'mobile']
 
-                    fields.forEach((field, i) => {
-                        if (o[field]) $(`[name=${field}]`).val(o[field]);
-                    });
+                        fields.forEach((field) => {
+                            if (o[field]) {
+                                let cleanValue = (field === 'comment') ? stripHTML(o[field]) : o[field];
+                                $(`[name=${field}]`).val(cleanValue);
+                            }
+                        });    
+                    
                     
                     $('#contact_picture').attr('src', `/web/volunteer/get_profile_picture/${o.id}`)
 

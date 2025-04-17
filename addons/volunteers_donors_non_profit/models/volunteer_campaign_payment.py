@@ -40,6 +40,8 @@ class VolunteerCampaignPayment(models.Model):
     payment_ref_num = fields.Char(string='HDFC Ref', compute='get_payment_info', store=False)
     pan_num = fields.Char(string='PAN', store=False)
 
+    notes = fields.Text(string="Notes") 
+
     def get_invoice_num(self):
         for rec in self:
             rec.invoice_num = rec.cust_payment_id.move_id.name
