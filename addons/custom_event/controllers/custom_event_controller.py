@@ -117,6 +117,9 @@ class CustomEventController(http.Controller):
             print('Phone = ', ('' if (attendee.phone is None or attendee.phone is False) else attendee.phone))
             print('Discount Amount = ', discount_amount)
             print('Order Amount = ', order_amount)
+            print(event_ticket)
+            print('Event Ticket Name = ', event_ticket.name)
+            print('Event Name = ',event.name)
             payload = {
                     'order_id': order_id,
                     'amount': round((order_amount - discount_amount), 2),
@@ -127,7 +130,7 @@ class CustomEventController(http.Controller):
                     'action': "paymentPage",
                     'currency': "INR",
                     'return_url': callback_url,
-                    'description': ('Event: ' % event_ticket.name),
+                    'description': 'Event: ' + event.name + ', Ticket: '+event_ticket.name,
                     'first_name': attendee.name,
                     'last_name': ''
                 }
