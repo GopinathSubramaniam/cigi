@@ -359,7 +359,7 @@ class PaymentMethod(models.Model):
                 'subject': f'Receipt {invoice.name}',
                 'body_html': mail_template,
                 'email_to': invoice.partner_id.email,
-                'email_from': 'erp@cigi.org',
+                'email_from': 'CIGI<erp@cigi.org',
                 'email_cc': False,
                 'auto_delete': True,
                 'attachment_ids': [(4, attachment.id)] 
