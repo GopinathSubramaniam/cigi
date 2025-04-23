@@ -479,6 +479,7 @@
                                                 
                                                     <!-- Notes / Comments -->
                                                     <div class="mb-3">
+                                                    <label class="form-label fw-bold">Notes</label>
                                                         <textarea name="notes"
                                                             class="form-control form-control-sm border-0 border-bottom"
                                                                 placeholder="Add your comments or notes here..." rows="3">

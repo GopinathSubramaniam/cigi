@@ -14,7 +14,7 @@
                         <div class="col">
                             <!-- 1 Name -->
                             <div class="mb-3">
-                                <label class="form-label">Name</label>
+                                <label class="form-label fw-bold">Name</label>
                                 <input type="text" name="name" placeholder="Enter Name"
                                     required="1"
                                     class="form-control form-control-sm border-0 border-bottom"
@@ -24,7 +24,7 @@
                         <div class="col">
                             <!-- 1 Email -->
                             <div class="mb-3">
-                                <label class="form-label">Email</label>
+                                <label class="form-label fw-bold">Email</label>
                                 <input type="email" name="email" id="email"
                                     class="form-control form-control-sm border-0 border-bottom"
                                     placeholder="Enter Email" required="1" />
@@ -63,7 +63,7 @@
                         </div>
                         <div class="col-9 col-md-4 col-lg-3">
                             <div class="form-group">
-                                <label for="contact_picture">Upload Profile Picture</label>
+                                <label for="contact_picture fw-bold">Upload Profile Picture</label>
                                 <input type="file" name="contact_picture"
                                     class="form-control form-control-sm border border-0 border-bottom" />
                                 <!-- /web/volunteer/get_profile_picture/2 -->
@@ -81,7 +81,7 @@
                                 <div class="row">
                                     <div class="col-3 col-md-3 col-lg-3">
                                         <div class="mb-3">
-                                            <label class="form-label">Code</label>
+                                            <label class="form-label fw-bold">Code</label>
                                             <select type="select" name="phone_country_code"
                                                 class="form-control form-control-sm border-0 border-bottom"
                                                 placeholder="Type of ID"
@@ -97,7 +97,7 @@
                                     </div>
                                     <div class="col-9 col-md-9 col-lg-9">
                                         <div class="mb-3">
-                                            <label class="form-label">Contact No</label>
+                                            <label class="form-label fw-bold">Contact No</label>
                                             <input type="text" name="phone"
                                                 class="form-control form-control-sm border-0 border-bottom"
                                                 placeholder="Enter Phone"
@@ -111,7 +111,7 @@
                                 <div class="row">
                                     <div class="col-3 col-md-3 col-lg-3">
                                         <div class="mb-3">
-                                            <label class="form-label">Code</label>
+                                            <label class="form-label fw-bold">Code</label>
                                             <select type="select" name="mobile_country_code" class="form-control form-control-sm border-0 border-bottom"
                                                 placeholder="Type of ID" required="1">
                                                 <t t-foreach="countries" t-as="country">
@@ -124,7 +124,7 @@
                                     </div>
                                     <div class="col-9 col-md-9 col-lg-9">
                                         <div class="mb-3">
-                                            <label class="form-label">WhatsApp no</label>
+                                            <label class="form-label fw-bold">WhatsApp no</label>
                                             <input type="text" name="mobile"
                                                 class="form-control form-control-sm border-0 border-bottom"
                                                 placeholder="Enter Mobile" required="1" />
@@ -138,7 +138,7 @@
                             <div class="col-12 col-md-6">
                                 <!-- 3 Gender -->
                                 <div class="mb-3">
-                                    <label class="form-label">Gender</label>
+                                    <label class="form-label fw-bold">Gender</label>
                                     <select name="gender"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         required="1">
@@ -152,7 +152,7 @@
                             <div class="col-12 col-md-6">
                                 <!-- 3 Address -->
                                 <div class="mb-3">
-                                    <label class="form-label">Address</label>
+                                    <label class="form-label fw-bold">Address</label>
                                     <input type="text" name="street"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         placeholder="Enter Address" required="1" />
@@ -165,7 +165,7 @@
                             <div class="col-12 col-md-6">
                                 <!-- 4 Country of Residence -->
                                 <div class="mb-3">
-                                    <label class="form-label">Country of Residence</label>
+                                    <label class="form-label fw-bold">Country of Residence</label>
                                     <select name="country_id" id="country_id" required="1"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         onchange="onSelectCountry(this)">
@@ -181,7 +181,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">State</label>
+                                    <label class="form-label fw-bold">State</label>
                                     <select name="state_id" id="state_id"
                                         class="form-control form-control-sm border-0 border-bottom">
                                         <option value="">-- Select a state --</option>
@@ -195,7 +195,7 @@
                             <div class="col-12 col-md-6">
                                 <!-- 5 City -->
                                 <div class="mb-3">
-                                    <label class="form-label">City/District</label>
+                                    <label class="form-label fw-bold">City/District</label>
                                     <select name="city" id="city"
                                         class="form-control form-control-sm border-0 border-bottom">
                                         <option value="">-- Select a city --</option>
@@ -205,7 +205,7 @@
                             <div class="col-12 col-md-6">
                                 <!-- 5 Website / Linkedin Link -->
                                 <div class="mb-3">
-                                    <label class="form-label">Website/Linkedin</label>
+                                    <label class="form-label fw-bold">Website/Linkedin</label>
                                     <input type="text" name="website"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         placeholder="Enter Website/Linkedin Link" />
@@ -217,7 +217,7 @@
                         <div class="row justify-content-center">
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Highest Qualification</label>
+                                    <label class="form-label fw-bold">Highest Qualification</label>
                                     <select name="qualification" id="qualification" required="1"
                                         class="form-control form-control-sm border-0 border-bottom">
                                         <option value="" selected="selected">-- Select Qualification --</option>
@@ -231,7 +231,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Specialization</label>
+                                    <label class="form-label fw-bold">Specialization</label>
                                     <input type="text" name="specialization"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         placeholder="Enter Specialization" required="1" />
@@ -243,7 +243,7 @@
                         <div class="row justify-content-center">
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Profession</label>
+                                    <label class="form-label fw-bold">Profession</label>
                                     <input type="text" name="function"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         placeholder="Enter Job Position" required="1" />
@@ -252,7 +252,7 @@
                             <div class="col-12 col-md-6">
                                 <!-- 7 Institue/Company Name -->
                                 <div class="mb-3">
-                                    <label class="form-label">Institute/Company/Organization Name</label>
+                                    <label class="form-label fw-bold">Institute/Company/Organization Name</label>
                                     <input type="text" name="company_name"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         placeholder="Enter Institue/Company Name" />
@@ -266,7 +266,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
                                     <input type="hidden" name="res_volunteer_skill_ids" />
-                                    <label class="form-label">Resource Skills</label>
+                                    <label class="form-label fw-bold">Resource Skills</label>
                                     <div class="">
                                         <div class="selectBox" onclick="showCheckboxes()">
                                             <select
@@ -292,7 +292,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Resource Type (will be assigned by CIGI)</label>
+                                    <label class="form-label fw-bold">Resource Type (will be assigned by CIGI)</label>
                                     <select name="res_volunteer_type_id" id="res_volunteer_type_id"
                                         class="form-control form-control-sm border-0 border-bottom" disabled="disabled">
                                         <option value="">Select Volunteer Type</option>
@@ -312,8 +312,8 @@
                             <div class="col-12 col-md-6">
                                 <!-- 9 Notes -->
                                 <div class="mb-3">
-                                    <label class="form-label">Notes (Provide details of Awards and Participation in International Conferences - if any)</label>
-                                    <textarea type="text" name="comment"
+                                    <label class="form-label fw-bold">Notes (Provide details of Awards and Participation in International Conferences - if any)</label>
+                                    <textarea type="text" name="notes"
                                         class="form-control form-control-sm border-0 border-bottom"
                                         placeholder="Comment" rows="3"></textarea>
                                 </div>

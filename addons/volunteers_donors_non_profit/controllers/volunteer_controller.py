@@ -37,7 +37,7 @@ class VolunteerController(http.Controller):
             'subject': 'Volunteer Email Verification OTP',
             'body_html': body_html,
             'email_to': email,
-            'email_from': 'CIGI<cigicrm@cigi.org>',
+            'email_from': 'CIGI <cigicrm@cigi.org>',
             'email_cc': False,
             'auto_delete': True,
         }
@@ -46,7 +46,7 @@ class VolunteerController(http.Controller):
 
         res = {'email': email, 'otp': otp}
         cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
-        cont_data = cont.read(['id', 'name', 'gender', 'email', 'phone_country_code', 'phone', 'mobile_country_code', 'mobile', 'street', 'city', 'state_id', 'country_id', 'comment', 'company_name', 'qualification', 'specialization', 'website', 'function', 'res_volunteer_type_id', 'res_volunteer_skill_ids'])
+        cont_data = cont.read(['id', 'name', 'gender', 'email', 'phone_country_code', 'phone', 'mobile_country_code', 'mobile', 'street', 'city', 'state_id', 'country_id', 'notes', 'company_name', 'qualification', 'specialization', 'website', 'function', 'res_volunteer_type_id', 'res_volunteer_skill_ids'])
         data = cont_data[0] if cont_data else None
         if data is not None:
             skills = request.env["volunteer.skills"].sudo().search([('id', 'in', data['res_volunteer_skill_ids'])])
@@ -81,7 +81,7 @@ class VolunteerController(http.Controller):
                 state_id = kwargs['state_id']
                 city = kwargs['city']
                 country_id = kwargs['country_id']
-                comment = html2plaintext(kwargs.get('comment',''))
+                notes = html2plaintext(kwargs.get('notes', ''))
                 company_name = kwargs['company_name']
                 qualification = kwargs['qualification']
                 specialization = kwargs['specialization']
@@ -104,10 +104,10 @@ class VolunteerController(http.Controller):
                             "mobile_country_code": mobile_country_code,
                             "city": city,
                             "country_id": int(country_id),
-                            "state_id": int(state_id),
+                            #"state_id": int(state_id),
                             "street": street,
                             "function": function,
-                            "comment": comment,
+                            "notes": notes,
                             "qualification": qualification,
                             "specialization": specialization,
                             "website": website,
@@ -116,6 +116,9 @@ class VolunteerController(http.Controller):
                             "res_volunteer_skill_ids": res_volunteer_skill_ids,
                             "category_id": [(6, 0, tag_ids)] 
                         }
+                if state_id:
+                    contact["state_id"] = int(state_id)
+
                 cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
                 
                 # <> Profile pic upload

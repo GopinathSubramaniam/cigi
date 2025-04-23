@@ -27,6 +27,7 @@
                         <group>
                             <field name="res_volunteer_type_id"/>
                             <field name="res_volunteer_skill_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                            <field name="notes"/>
                         </group>
                        <group>
                             <field name="qualification"/>

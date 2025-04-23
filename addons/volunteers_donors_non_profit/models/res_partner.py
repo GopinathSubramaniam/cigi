@@ -43,6 +43,8 @@ class ResPartner(models.Model):
 
     qualification = fields.Char(string="Highest Qualification", copy=True)
     specialization = fields.Char(string="Specialization", copy=True)
+    notes = fields.Text(string="Volunteer Notes")
+
 
     mobile_country_code = fields.Char(string="Country Code", copy=True)
     phone_country_code = fields.Char(string="Country Code", copy=True)

@@ -182,7 +182,7 @@ function verifyOTP() {
                     const o = otpRes.data;
                     existing_data = o;
                     const fields = ['phone', 'gender', 'country_id', 'qualification', 'function', 'res_volunteer_type_id',
-                        'comment', 'street', 'state_id', 'website', 'specialization', 'company_name', 'mobile', 'mobile_country_code',
+                        'notes', 'street', 'state_id', 'website', 'specialization', 'company_name', 'mobile', 'mobile_country_code',
                         'phone_country_code']
 
                     fields.forEach((field) => {
@@ -275,14 +275,20 @@ function handleCheckboxChange(event) {
 }
 
 function onSelectCountry(e) {
-    if (e && e.selectedOptions && e.selectedOptions.length > 0 && e.selectedOptions[0].attributes.data) {
-        if (e.selectedOptions[0].attributes.data.value == 'IN')
-            $('#state_id').removeClass('d-none');
-        else
-            $('#state_id').addClass('d-none');
+    let country_id = (e && e.value) ? e.value : $('#country_id').val();
+
+    // Show/hide state field only if the selected country is India (id = 104)
+    if (parseInt(country_id) === 104) {
+        $('#state_id').closest('.mb-3').removeClass('d-none');
+        $('#state_id').attr('required', true);
+        getStates(); // Fetch Indian states
+    } else {
+        $('#state_id').closest('.mb-3').addClass('d-none');
+        $('#state_id').val(''); // Clear previously selected state
+        $('#state_id').removeAttr('required');
     }
 
-    let country_id = (e && e.value) ? e.value : $('#country_id').val();
+    // Fetch cities based on country
     $.ajax({
         url: '/city/bycountry/' + country_id,
         type: 'GET',
@@ -295,7 +301,10 @@ function onSelectCountry(e) {
                 $.each(data, function (index, c) {
                     $cityDropdown.append('<option value="' + c.city_name + '">' + c.city_name + '</option>');
                 });
-                $('#city').val(existing_data.city);
+
+                if (typeof existing_data !== 'undefined') {
+                    $('#city').val(existing_data.city);
+                }
             } else {
                 $cityDropdown.append('<option value="">No cities available</option>');
             }
