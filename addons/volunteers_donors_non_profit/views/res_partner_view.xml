@@ -9,7 +9,7 @@
 
             <!-- Display custom PAN number -->
             <xpath expr="//field[@name='vat']" position="after">
-                <field name="pan_number"/>
+                <field name="pan_number" placeholder="Enter PAN Number"/>
             </xpath>
 
             <xpath expr="//field[@name='ref']" position="after">
