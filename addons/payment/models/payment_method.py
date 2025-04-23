@@ -384,6 +384,7 @@ class PaymentMethod(models.Model):
                 'product_uom_id': line.product_uom.id,
                 'tax_ids': [(6, 0, line.tax_id.ids)],
                 'sale_line_ids': [(6, 0, [line.id])],
+                'analytic_distribution': line.analytic_distribution
             }
             invoice_lines.append((0, 0, vals))
         

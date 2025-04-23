@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<odoo>
+	<record model="ir.ui.view" id="view_move_form_inherit_zb_account_entry_allocation">
+		<field name="name">account.move.form.inherited.zb.account.entry.allocation</field>
+		<field name="model">account.move</field>
+		<field name="inherit_id" ref="account.view_move_form" />
+		<field name="arch" type="xml">
+			<data>
+			<xpath expr="//sheet/div[@name='button_box']" position="inside">
+		        <button name="action_view_allocated_moves"
+		                type="object"
+		                class="oe_stat_button"
+		                icon="fa-list" invisible="not allocated_move_ids"> 
+		            <field name="allocated_move_ids" widget="statinfo" string="Journal Entries"/>
+		        </button>
+           </xpath>
+           <xpath expr="//page[@id='aml_tab']/field[@name='line_ids']/tree/field[@name='account_id']" position="after">
+            	 <field name="allocate_entries" column_invisible='1' />
+                 <button name="action_allocate" type="object" string="Allocate" class="oe_highlight" invisible="not allocate_entries or parent.state == 'cancel' or parent.allocated_move_ids "/>
+           </xpath>
+           <xpath expr="//page[@id='other_tab_entry']/group[@id='other_tab_entry_group']/group[2]" position="inside">
+                <field name="source_move_id" string="Related Entry" readonly='1' invisible='not source_move_id' />
+                <field name="do_not_allocate" readonly="state in ('posted', 'cancel')"/>
+           </xpath>
+            <xpath expr="//group[@name='accounting_info_group']/field[@name='to_check']" position="after">
+                <field name="source_move_id" string="Related Entry" readonly='1' invisible='not source_move_id' />
+                <field name="do_not_allocate" readonly="state in ('posted', 'cancel')"/>
+           </xpath>
+                
+			</data>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="view_move_line_tree_inherit_zb_account_entry_allocation">
+        <field name="name">view.move.line.tree.inherited.zb.account.entry.allocation</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree" />
+        <field name="arch" type="xml">
+        <data>
+           
+           <xpath expr="//field[@name='account_id']" position="after">
+                  <field name="allocate_entries" column_invisible='1' />
+                 <button name="action_allocate" type="object" string="Allocate" class="oe_highlight" invisible="not allocate_entries or parent_state == 'cancel'"/>
+           </xpath>
+          
+            </data>
+        </field>
+    </record>
+	
+	
+</odoo>

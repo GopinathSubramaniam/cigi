@@ -45,6 +45,7 @@ Allow you to share tasks to volunteer on the portal of your website (Odoo standa
         'views/volunteer_skills_view.xml',
         'views/volunteer_type_view.xml',
         'views/volunteer_templates.xml',
+        'views/account_payment_view.xml',
         
         'views/crm_lead_view.xml',
         'views/volunteer_working_details_view.xml',
@@ -59,7 +60,6 @@ Allow you to share tasks to volunteer on the portal of your website (Odoo standa
             'volunteers_donors_non_profit/static/src/js/volunteer_management.js',
             'https://checkout.razorpay.com/v1/checkout.js'
         ],
-        
     },
     
     'installable': True,

@@ -44,9 +44,10 @@ class ResPartner(models.Model):
     qualification = fields.Char(string="Highest Qualification", copy=True)
     specialization = fields.Char(string="Specialization", copy=True)
 
-    mobile_country_code = fields.Char(string="Specialization", copy=True)
-    phone_country_code = fields.Char(string="Specialization", copy=True)
-    
+    mobile_country_code = fields.Char(string="Country Code", copy=True)
+    phone_country_code = fields.Char(string="Country Code", copy=True)
+
+    pan_number = fields.Char(string="PAN Number", copy=True)
 
     # </>
 

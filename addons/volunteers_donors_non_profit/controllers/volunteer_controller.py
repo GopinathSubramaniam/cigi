@@ -17,10 +17,11 @@ class VolunteerController(http.Controller):
 
     @http.route('/web/volunteer/form', type="http", auth="public", website=True) 
     def volunteer_form(self, **kwargs):
-        qual = request.env["hr.skill.type"].sudo().search([('name', '=', 'qualification')], limit=1)
+        qual = request.env["hr.skill.type"].sudo().search([('name', 'ilike', 'qualification')], limit=1)
         qualifications = request.env["hr.skill"].sudo().search([('skill_type_id', '=', qual.id)])
+        countries = request.env["res.country"].sudo().search([])
 
-        return request.render('volunteers_donors_non_profit.volunteer_form', {'qualifications': qualifications})
+        return request.render('volunteers_donors_non_profit.volunteer_form', {'qualifications': qualifications, 'countries': countries}) 
     
     @http.route('/web/volunteer/send_otp', type="http", auth="public", website=True, methods=['POST'], csrf=False)
     def send_otp(self, **kwargs):
@@ -45,7 +46,7 @@ class VolunteerController(http.Controller):
 
         res = {'email': email, 'otp': otp}
         cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
-        cont_data = cont.read(['id', 'name', 'gender', 'email', 'phone', 'mobile', 'street', 'city', 'state_id', 'country_id', 'comment', 'company_name', 'qualification', 'specialization', 'website', 'function', 'res_volunteer_type_id', 'res_volunteer_skill_ids'])
+        cont_data = cont.read(['id', 'name', 'gender', 'email', 'phone_country_code', 'phone', 'mobile_country_code', 'mobile', 'street', 'city', 'state_id', 'country_id', 'comment', 'company_name', 'qualification', 'specialization', 'website', 'function', 'res_volunteer_type_id', 'res_volunteer_skill_ids'])
         data = cont_data[0] if cont_data else None
         if data is not None:
             skills = request.env["volunteer.skills"].sudo().search([('id', 'in', data['res_volunteer_skill_ids'])])
@@ -98,8 +99,9 @@ class VolunteerController(http.Controller):
                             "gender": gender,
                             "email": email,
                             "phone": phone,
-                            "mobile_country_code": mobile_country_code,
+                            "phone_country_code": phone_country_code,
                             "mobile": mobile,
+                            "mobile_country_code": mobile_country_code,
                             "city": city,
                             "country_id": int(country_id),
                             "state_id": int(state_id),

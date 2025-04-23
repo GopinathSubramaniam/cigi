@@ -1,10 +1,16 @@
 
-from odoo import models
+from odoo import fields, models
 import base64
 import re
 
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
+
+
+    payment_ref = fields.Char(string="Payment Reference", copy=True)
+    campaign_name = fields.Char(string="Campaign Name", copy=True)
+    pan_number = fields.Char(string="PAN Number", copy=True)
+    
 
     def _create_payment_in_account(self, ref_val, contact_id, payment_date, amount):
       
@@ -15,13 +21,6 @@ class AccountPayment(models.Model):
         contact = self.env['res.partner'].sudo().browse(int(contact_id))
 
         print(contact)
-        # <> Removing the html tags 
-        print(contact.comment)
-        comt = ''
-        if(contact.comment):
-            clean = re.compile('<.*?>')
-            comt =  re.sub(clean, '', contact.comment)
-        # </>
 
         payment_vals = {
             'partner_id': contact_id,  # Customer/Vendor ID
@@ -31,10 +30,12 @@ class AccountPayment(models.Model):
             'journal_id': journal.id,  # The journal for the payment (e.g., bank journal)
             'currency_id': journal.company_id.currency_id.id,  # Currency in which payment is made
             'partner_type': 'customer',  # 'customer' or 'supplier'
-            'ref': ('%s:%s, %s:%s, %s' % ('Payment Ref', ref_val, 'Campaign Name', campaign.campaign_name, comt)),  # A reference note or description
+            'payment_ref': ref_val,  # Reference for the payment (like invoice number, etc.)
+            'campaign_name': campaign.campaign_name,  # Campaign name
+            'pan_number': contact.pan_number,  # PAN number of the contact  
             'date': payment_date,  # The payment date
         }
-        print('Payment Ref = ', payment_vals['ref'])
+      
         payment = self.env['account.payment'].create(payment_vals)
         payment.sudo().action_post()
        

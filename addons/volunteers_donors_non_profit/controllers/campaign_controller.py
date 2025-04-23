@@ -7,6 +7,7 @@ import odoo.addons.payment.utils as payment_utils
 from odoo import http
 from odoo.exceptions import UserError
 from odoo.http import request
+import traceback
 
 
 class CampaignController(http.Controller):
@@ -29,32 +30,28 @@ class CampaignController(http.Controller):
     def donate(self, campaign_id, **kwargs): 
         
         try:
-
             amount = kwargs['amount']
             name = kwargs['name']
             email = kwargs['email']
             mobile = kwargs['mobile']
-            notes = kwargs.get('notes')
-            
-            # Dontation - Notes
-            request.session['donation_note'] = notes
-           
+            notes = kwargs['notes']
             
             # Country of residence
-            country_of_residence_name = 'Unknown'
+            country_of_residence = False
             if kwargs['country_of_residence']:
                 country_of_residence = request.env['res.country'].sudo().browse(int(kwargs['country_of_residence']))
-                country_of_residence_name = country_of_residence.name
             
-            # PAN Number
-            id_number = kwargs['id_number']
+            id_number = kwargs['id_number'] # PAN Number
             
             street = kwargs['address']
             state_id = kwargs['state_id']
             city = kwargs['city']
+            zip = kwargs['zip']
 
-            # Address country
+            # Default country
             country = request.env['res.country'].sudo().search([('code', '=', 'IN')], limit=1)
+            if country_of_residence:
+                country = country_of_residence
 
             tag = request.env['res.partner.category'].search([('name', '=', 'Donor')], limit=1)
             if not tag:
@@ -62,14 +59,10 @@ class CampaignController(http.Controller):
                     'name': 'Donor'
                 })
 
-            print('================id_number ========== ', id_number)
-            print('================ country_of_residence_name ========== ', country_of_residence_name)
-            
             # <> Create a new contact If the contact is not exists
             existing_cont = request.env["res.partner"].sudo().search([('email', '=', email)], limit=1)
             print('Comment = ', existing_cont.comment)
-            if not existing_cont:
-                contact = {
+            contact = {
                     "name": name,
                     "complete_name": name,
                     "email": email,
@@ -78,15 +71,19 @@ class CampaignController(http.Controller):
                     "country_id": country.id,
                     "state_id": state_id,
                     "street": street,
-                    "comment": ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence_name, 'PAN', id_number)),
+                    # "comment": ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence_name, 'PAN', id_number)),
+                    "pan_number": id_number,
                     "active": True,
                     "is_donors": True,
                     'company_id': 1, # Default company id
                     'category_id': [(6, 0, [tag.id])] ,
+                    'zip': zip
                 }
-                existing_cont = request.env["res.partner"].sudo().create(contact);
-            elif not existing_cont.comment:
-                existing_cont.write({'comment': ('%s:%s, %s: %s' % ('Country of Residence', country_of_residence_name, 'PAN', id_number))})
+                
+            if not existing_cont:
+                existing_cont = request.env["res.partner"].sudo().create(contact) # Create a new contact
+            else:
+                existing_cont.write(contact) # Update existing contact
             # </>
 
             # 2024100409_23_2
@@ -94,11 +91,16 @@ class CampaignController(http.Controller):
 
             # order_id, name, amount, email, phone, desc, callback_url
             callbackurl = payment_utils.get_payment_donation_callback()+order_id
-            payment_url = request.env['payment.method']._redirect_to_payment_page(order_id, name, amount, email, mobile, 'Donation', callbackurl)
+            donation_note = 'Donation'
+            if notes:
+                donation_note = f'{donation_note}~{notes}'
+
+            payment_url = request.env['payment.method']._redirect_to_payment_page(order_id, name, amount, email, mobile, donation_note, callbackurl)
             print('Payment URL = ', payment_url)
             return redirect(payment_url)
         except Exception as e:
            print(e)
+           print(traceback.format_exc())
            raise UserError(f"Something went wrong. Please try again later")
     
     @http.route(['/campaign/payment/success/<string:return_val>'], type="http", auth="public", website=True, sitemap=False, csrf=False)
@@ -118,7 +120,10 @@ class CampaignController(http.Controller):
                 
                 contact = request.env['res.partner'].browse(int(contact_id))
                 paid_amount = jsonres['amount']
-                notes = request.session.get('donation_note', '')
+                notes = jsonres['metadata']['payment_page_sdk_payload']['description']
+                splitted = notes.split('~')
+                if splitted and len(splitted) > 1:
+                    notes = splitted[1]
 
                 # Create bill for the contact_id. We will share this bill as a receipt with donor
                 today = date.today().strftime('%Y-%m-%d')

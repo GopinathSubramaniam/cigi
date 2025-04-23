@@ -6,6 +6,12 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
+
+            <!-- Display custom PAN number -->
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="pan_number"/>
+            </xpath>
+
             <xpath expr="//field[@name='ref']" position="after">
                 <group string="Volunteer">
                     <field name="is_volunteer"/>

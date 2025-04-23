@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+zb_account_entry_allocation.access_account_move_allocate_wizard,access_account_move_allocate_wizard,zb_account_entry_allocation.model_account_move_allocate_wizard,base.group_user,1,1,1,1

@@ -142,30 +142,30 @@ function sendOTP(ev) {
         location.reload();
         $('#sent_otp_btn').attr('disabled', false).html('Sent OTP');
         return;
-    }else {
+    } else {
         $('#email').removeClass('is-invalid');
 
     }
-        $.ajax({
-            url: '/web/volunteer/send_otp',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ 'email': email }),
-            success: function (data) {
-                if (data.otp) {
-                    otpRes = data;
-                    $('#send_otp_btn').attr('disabled', false).html('Send OTP')
-                    $('#send_otp_form').addClass('d-none');
-                    $('#verify_otp_form').removeClass('d-none');
-                } else if (data.error) {
-                    alert(data.error);
-                    $('#send_otp_btn').attr('disabled', false).html('Send OTP');
-                } else {
-                    console.log('Failed to send OTP');
-                }
+    $.ajax({
+        url: '/web/volunteer/send_otp',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ 'email': email }),
+        success: function (data) {
+            if (data.otp) {
+                otpRes = data;
+                $('#send_otp_btn').attr('disabled', false).html('Send OTP')
+                $('#send_otp_form').addClass('d-none');
+                $('#verify_otp_form').removeClass('d-none');
+            } else if (data.error) {
+                alert(data.error);
+                $('#send_otp_btn').attr('disabled', false).html('Send OTP');
+            } else {
+                console.log('Failed to send OTP');
             }
-        });
-    }
+        }
+    });
+}
 
 function verifyOTP() {
     const email = $('#email').val();
@@ -182,16 +182,26 @@ function verifyOTP() {
                     const o = otpRes.data;
                     existing_data = o;
                     const fields = ['phone', 'gender', 'country_id', 'qualification', 'function', 'res_volunteer_type_id',
-                        'comment', 'street', 'state_id', 'website', 'specialization', 'company_name', 'mobile']
+                        'comment', 'street', 'state_id', 'website', 'specialization', 'company_name', 'mobile', 'mobile_country_code',
+                        'phone_country_code']
 
-                        fields.forEach((field) => {
-                            if (o[field]) {
-                                let cleanValue = (field === 'comment') ? stripHTML(o[field]) : o[field];
-                                $(`[name=${field}]`).val(cleanValue);
+                    fields.forEach((field) => {
+                        if (o[field]) {
+                            let cleanValue = o[field];
+
+                            if (field == 'mobile') {
+                                cleanValue = o[field].replace(o['mobile_country_code'], '').trim();
+                                console.log('Mobile:::::::::::::: ', cleanValue);
+                            } else if (field == 'phone') {
+                                cleanValue = o[field].replace(o['phone_country_code'], '').trim();
+                                console.log('Phone:::::::::::::: ', cleanValue);
+                            } else if (field === 'comment') {
+                                cleanValue = stripHTML(o[field]);
                             }
-                        });    
-                    
-                    
+                            $(`[name=${field}]`).val(cleanValue);
+                        }
+                    });
+
                     $('#contact_picture').attr('src', `/web/volunteer/get_profile_picture/${o.id}`)
 
                     // <> Manage phone data

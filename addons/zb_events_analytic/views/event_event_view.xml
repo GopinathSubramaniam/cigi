@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form view -->
+        <record id="view_event_event_form_inherited" model="ir.ui.view">
+            <field name="name">event.event.form.inherited</field>
+            <field name="model">event.event</field>
+            <field name="inherit_id" ref="event.view_event_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                	<field name="analytic_distribution" widget="analytic_distribution"/>
+                </xpath>
+                
+            </field>
+        </record>
+        
+    </data>
+</odoo>

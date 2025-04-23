@@ -110,7 +110,7 @@
                             <tr>
                                 <td>Project Name</td>
                                 <td>
-                                    <t t-esc="object.ref.split(',')[1].split(':')[1]" />
+                                    <t t-esc="object.campaign_name" />
                                 </td>
                             </tr>
                             <tr>
@@ -122,16 +122,13 @@
                             <tr>
                                 <td>Payment Ref</td>
                                 <td>
-                                    <t t-esc="object.ref.split(',')[0].split(':')[1]" />
+                                    <t t-esc="object.payment_ref" />
                                 </td>
                             </tr>
-                            <tr
-                                t-if="len(object.ref.split(',')) > 3 and len(object.ref.split(',')[3].split(':')) > 1">
+                            <tr t-if="object.pan_number">
+                                <td>PAN Number</td>
                                 <td>
-                                    PAN Number
-                                </td>
-                                <td>
-                                    <t t-esc="object.ref.split(',')[3].split(':')[1]" />
+                                    <t t-esc="object.pan_number" />
                                 </td>
                             </tr>
                         </table>

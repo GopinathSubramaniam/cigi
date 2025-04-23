@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_account_move_allocate_wizard" model="ir.ui.view">
+        <field name="name">account.move.allocate.wizard.form</field>
+        <field name="model">account.move.allocate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Allocate Journal Entries">
+                <group>
+                <group>
+                    <field name="journal_id" required="1" options="{'no_create': True, 'no_create_edit': True}"/>
+                    <field name="no_of_entries" required="1"  />
+                    <field name="starting_date" required="1" />
+                     <field name="ending_date"  />
+                     <field name="company_id" options="{'no_create': True, 'no_create_edit': True}" readonly='1'/>
+                      <field name="currency_id" invisible="1" options="{'no_create': True, 'no_create_edit': True}" />
+                      <field name="partner_id" invisible="1" options="{'no_create': True, 'no_create_edit': True}"/>
+                    </group>
+                    <group>
+                    <field name="credit_account_id" required="1" options="{'no_create': True, 'no_create_edit': True}" readonly='credit_account_readonly'/>
+                    <field name="debit_account_id" required="1" options="{'no_create': True, 'no_create_edit': True}" readonly='debit_account_readonly'/>
+                   <field name="total_amount" readonly='1'/>
+                    <field name="allocated_amount"/>
+                    <field name="frequency" required="1" />
+                    <field name="analytic_distribution"
+                           widget="analytic_distribution"
+                    /> 
+                    <field name="debit_account_readonly" invisible='1'/>
+                    <field name="credit_account_readonly"  invisible='1'/>
+                    
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_create_entries" string="Create Entry" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

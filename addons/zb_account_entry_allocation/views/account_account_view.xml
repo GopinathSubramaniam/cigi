@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_account_form_inherit_zb_account_entry_allocation" model="ir.ui.view">
+        <field name="name">view.account.form.inherit.zb.account.entry.allocation</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='group_id']" position="after">
+              <field name="allocate_entries" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
