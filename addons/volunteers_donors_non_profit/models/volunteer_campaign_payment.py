@@ -37,7 +37,7 @@ class VolunteerCampaignPayment(models.Model):
 
     invoice_num = fields.Char(compute='get_invoice_num', string='Payment Number', store=False)
 
-    payment_ref_num = fields.Char(string='Email', related='cust_payment_id.payment_ref')
+    payment_ref_num = fields.Char(string='Payment Ref', related='cust_payment_id.payment_ref')
     pan_num = fields.Char(string='PAN', related='partner_id.pan_number')
 
     notes = fields.Text(string="Notes") 
