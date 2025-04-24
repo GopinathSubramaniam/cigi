@@ -68,6 +68,7 @@
                 <field name="gender" optional="show"/>
                 <field name="res_volunteer_type_id" optional="show"/>
                 <field name="res_volunteer_skill_ids" widget="many2many_tags" optional="show"/>
+                <field name="notes" optional="show"/>
             </xpath>
         </field>
     </record>

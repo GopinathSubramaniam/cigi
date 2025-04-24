@@ -35,7 +35,18 @@ class CampaignController(http.Controller):
             email = kwargs['email']
             mobile = kwargs['mobile']
             notes = kwargs['notes']
-            
+
+            # Validate notes: max 100 words
+            word_count = len([word for word in notes.strip().split() if word])
+            if word_count > 100:
+                campaign = request.env['volunteer.campaign'].browse(campaign_id)
+                return request.render('volunteers_donors_non_profit.website_campaign_detail', {
+                    "campaign": campaign,
+                    "error_message": "Notes cannot exceed 100 words. Please shorten your message.",
+                    "form_data": kwargs,  # Pass the form data back to the front-end
+                    "is_error": True,  # Flag for error handling
+                })
+
             # Country of residence
             country_of_residence = False
             if kwargs['country_of_residence']:

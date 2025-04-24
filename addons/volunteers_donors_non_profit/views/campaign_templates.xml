@@ -479,11 +479,26 @@
                                                 
                                                     <!-- Notes / Comments -->
                                                     <div class="mb-3">
-                                                    <label class="form-label fw-bold">Notes</label>
+                                                        <label class="form-label fw-bold">
+                                                            Please enter your City and if any other comments related to your donations
+                                                        </label>
                                                         <textarea name="notes"
                                                             class="form-control form-control-sm border-0 border-bottom"
-                                                                placeholder="Add your comments or notes here..." rows="3">
-                                                        </textarea>
+                                                            placeholder="Add your comments or notes here..." rows="3"
+                                                            t-if="form_data and form_data.get('notes')"
+                                                        ><t t-esc="form_data.get('notes')"/></textarea>
+                                                        <textarea name="notes"
+                                                            class="form-control form-control-sm border-0 border-bottom"
+                                                            placeholder="Add your comments or notes here..." rows="3"
+                                                            t-if="not (form_data and form_data.get('notes'))"
+                                                        ></textarea>
+
+                                                        <!-- Error message if the word count exceeds 100 -->
+                                                        <t t-if="is_error">
+                                                            <div class="text-danger mt-2">
+                                                                <p><strong>Error:</strong> Notes cannot exceed 100 words. Please shorten your message.</p>
+                                                            </div>
+                                                        </t>
                                                     </div>
 
                                                     <!-- 80G tax benefits checkbox -->

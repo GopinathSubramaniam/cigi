@@ -3,7 +3,7 @@
         <t t-call="website.layout">
             <div class="container my-3">
                 <div class="col text-center">
-                    <h4 class="my-4">Register / Modify Cigi Resource Person</h4>
+                    <h4 class="my-4">Register / Modify CIGI Resource Person</h4>
                 </div>
                 <form id="volunteer_form" method="post" enctype="multipart/form-data"
                     t-attf-action="/web/volunteer/registration"
