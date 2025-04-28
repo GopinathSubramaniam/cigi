@@ -190,13 +190,17 @@ function verifyOTP() {
                             let cleanValue = o[field];
 
                             if (field == 'mobile') {
-                                cleanValue = o[field].replace(o['mobile_country_code'], '').trim();
+                                const val = o[field].replace(o['mobile_country_code'], '').trim();
+                                cleanValue = val.replace(/[ ]/g, '');
                                 console.log('Mobile:::::::::::::: ', cleanValue);
                             } else if (field == 'phone') {
-                                cleanValue = o[field].replace(o['phone_country_code'], '').trim();
+                                const val = o[field].replace(o['phone_country_code'], '').trim();
+                                cleanValue = val.replace(/[ ]/g, '');
                                 console.log('Phone:::::::::::::: ', cleanValue);
                             } else if (field === 'comment') {
                                 cleanValue = stripHTML(o[field]);
+                            } else if (field === 'phone_country_code' || field === 'mobile_country_code') {
+                                cleanValue = o[field].replace(/[+ ]/g, '');
                             }
                             $(`[name=${field}]`).val(cleanValue);
                         }
@@ -205,23 +209,23 @@ function verifyOTP() {
                     $('#contact_picture').attr('src', `/web/volunteer/get_profile_picture/${o.id}`)
 
                     // <> Manage phone data
-                    if (o.phone) {
+                    /* if (o.phone) {
                         const p_splitted = o.phone.split(' ');
                         if (p_splitted.length === 3) {
                             $('#phone_country_code').val(p_splitted[0].trim());
                             $('[name=phone]').val(p_splitted[1].trim() + p_splitted[2].trim());
                         }
-                    }
+                    } */
                     // </>
 
                     // <> Manage mobile data
-                    if (o.mobile) {
+                    /* if (o.mobile) {
                         const m_splitted = o.mobile.split(' ');
                         if (m_splitted.length === 3) {
                             $('#mobile_country_code').val(m_splitted[0].trim());
                             $('[name=mobile]').val(m_splitted[1].trim() + m_splitted[2].trim());
                         }
-                    }
+                    } */
                     // </>
 
                     if (o.res_volunteer_skill_ids) {

@@ -73,9 +73,9 @@ class VolunteerController(http.Controller):
 
                 name = kwargs['name']
                 gender = kwargs['gender']
-                mobile_country_code = kwargs['mobile_country_code']
+                mobile_country_code = ('%s%s' % ('+', kwargs['mobile_country_code']))
                 mobile = ('%s %s' % (mobile_country_code, kwargs['mobile']))
-                phone_country_code = kwargs['phone_country_code']
+                phone_country_code = ('%s%s' % ('+', kwargs['phone_country_code']))
                 phone = ('%s %s' % (phone_country_code, kwargs['phone']))
                 street = kwargs['street']
                 state_id = kwargs['state_id']
