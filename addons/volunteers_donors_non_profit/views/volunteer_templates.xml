@@ -81,14 +81,14 @@
                                 <div class="row">
                                     <div class="col-3 col-md-3 col-lg-3">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Code</label>
+                                            <label class="form-label fw-bold">Country Code</label>
                                             <select type="select" name="phone_country_code"
                                                 class="form-control form-control-sm border-0 border-bottom"
                                                 placeholder="Type of ID"
                                                 required="1">
                                                 <!-- <option value="+93">AF +93</option> -->
                                                 <t t-foreach="countries" t-as="country">
-                                                    <option t-att-value="country.phone_code" t-att-data="country.phone_code">
+                                                    <option t-att-value="country.phone_code" t-att-selected="country.code == 'IN' and 'selected' or None" t-att-data="country.phone_code">
                                                         <t t-esc="country.code" /> <t t-esc="country.phone_code" />
                                                     </option>
                                                 </t>
@@ -111,11 +111,12 @@
                                 <div class="row">
                                     <div class="col-3 col-md-3 col-lg-3">
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Code</label>
+                                            <label class="form-label fw-bold">Country Code</label>
                                             <select type="select" name="mobile_country_code" class="form-control form-control-sm border-0 border-bottom"
                                                 placeholder="Type of ID" required="1">
                                                 <t t-foreach="countries" t-as="country">
-                                                    <option t-att-value="country.phone_code" t-att-data="country.phone_code">
+                                                    <option t-att-value="country.phone_code" t-att-selected="country.code == 'IN' and 'selected' or None"
+                                                    t-att-data="country.phone_code">
                                                         <t t-esc="country.code" /> <t t-esc="country.phone_code" />
                                                     </option>
                                                 </t>
@@ -341,14 +342,14 @@
                     <div class="col-12 col-md-4 text-center">
                         <!-- Success message -->
                         <div t-if="success_msg">
-                            <div class="alert alert-success" role="alert">
+                            <div class="success-msg">
                                 <t t-esc="success_msg" />
                             </div>
                         <t t-if="redirect_url">
                             <script>
                                 setTimeout(function () {
                                     window.location.href= "<t t-esc='redirect_url' />";
-                                }, 2000);
+                                }, 5000);
                             </script>
                         </t>
                         </div>

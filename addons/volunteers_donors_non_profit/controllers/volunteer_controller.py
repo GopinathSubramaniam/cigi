@@ -4,7 +4,6 @@ import json
 import random
 import re
 import traceback
-
 from odoo import http
 from odoo.http import Response, request
 from odoo.tools import html2plaintext
@@ -135,7 +134,7 @@ class VolunteerController(http.Controller):
                         contact['image_1920'] = base64_data
 
                     request.env["res.partner"].sudo().create(contact)
-                    res = {'success_msg': 'Registered Successfully'}
+                    res = {'success_msg': 'Your Data Registered Successfully'}
                 else:
                     contact_tags = cont.category_id
                     for t in contact_tags:
@@ -150,7 +149,7 @@ class VolunteerController(http.Controller):
 
                     base_url = request.env['ir.config_parameter'].get_param('web.base.url')
                     
-                    res = {'success_msg': 'Updated Successfully', 'redirect_url': f'{base_url}/web/volunteer/form' }
+                    res = {'success_msg': 'Your Data Updated Successfully', 'redirect_url': f'{base_url}/web/volunteer/form' }
                     return request.render('volunteers_donors_non_profit.volunteer_form', res)
         
         except Exception as e:

@@ -131,3 +131,15 @@ hr {
 }
 
 /* </> Multi select */
+
+.success-msg {
+    background-color: #e6f0ff;     /* Light blue */
+    color: #003366;                /* Dark blue */
+    padding: 16px 20px;
+    margin-top: 20px;
+    border-left: 5px solid #3399ff;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1.50rem;            
+    text-align: center;
+}
